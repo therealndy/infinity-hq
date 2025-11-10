@@ -197,6 +197,7 @@
       }
       
       // Send personalized greeting after chat opens
+      // Wait longer for ADI chat UI to be ready
       setTimeout(() => {
         const isErikTommy = demoId.toLowerCase().includes('erik') || 
                            demoId.toLowerCase().includes('tommy');
@@ -208,14 +209,20 @@
           greeting = `Welcome ${name}! I'm ADI - Autonomous Digital Intelligence. Unlike typical AI chatbots, I can think independently, interrupt when I have insights, and take initiative in conversations. I blend Swedish and English naturally - just like the family that created me! 🇸🇪💙\n\nAsk me anything - tech, philosophy, or just chat!`;
         }
         
-        // Add greeting to chat (simulate ADI message)
-        if (window.addADIMessage) {
-          window.addADIMessage(greeting, false);
+        // Add greeting to chat - with retry if not ready
+        function sendGreeting(retries = 5) {
+          if (window.addADIMessage && document.getElementById('adi-messages')) {
+            window.addADIMessage(greeting, false);
+            console.log('🧠 ADI greeting delivered to', name);
+          } else if (retries > 0) {
+            console.log('Waiting for ADI chat to be ready...', retries);
+            setTimeout(() => sendGreeting(retries - 1), 500);
+          }
         }
         
-        console.log('🧠 ADI greeting delivered to', name);
+        sendGreeting();
         
-      }, 1000);
+      }, 1500);
       
     }, 500);
   }

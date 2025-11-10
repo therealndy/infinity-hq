@@ -179,6 +179,13 @@ function handleADIKeyPress(event) {
 function addADIMessage(message, isAutonomous = false, isUser = false) {
   const messagesDiv = document.getElementById('adi-messages');
   
+  // Safety check - if chat not initialized yet, queue message
+  if (!messagesDiv) {
+    console.log('ADI chat not ready yet, queueing message');
+    setTimeout(() => addADIMessage(message, isAutonomous, isUser), 500);
+    return;
+  }
+  
   const msgDiv = document.createElement('div');
   msgDiv.className = `adi-message ${isUser ? 'user-message' : 'adi-message-response'} ${isAutonomous ? 'autonomous' : ''}`;
   
@@ -209,6 +216,10 @@ function addADIMessage(message, isAutonomous = false, isUser = false) {
 
 function showADITyping(show) {
   const typingDiv = document.getElementById('adi-typing');
+  if (!typingDiv) {
+    return; // Safety check
+  }
+  
   if (show) {
     typingDiv.classList.remove('hidden');
   } else {
@@ -228,6 +239,10 @@ function escapeHtml(text) {
   div.textContent = text;
   return div.innerHTML;
 }
+
+// Export to window for demo-join.js
+window.addADIMessage = addADIMessage;
+window.toggleADIChat = toggleADIChat;
 
 // Initialize on page load
 if (document.readyState === 'loading') {
