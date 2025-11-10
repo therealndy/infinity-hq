@@ -1,9 +1,20 @@
 /* public/public-room.css - GROUP CHAT STYLING */
 
+/* Fullscreen container */
+#public-room-fullscreen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a0033 100%);
+}
+
 .public-room-container {
   display: flex;
   height: 100vh;
-  background: linear-gradient(135deg, #0a0a0a 0%, #1a0033 100%);
+  width: 100vw;
   overflow: hidden;
 }
 
@@ -22,6 +33,7 @@
 .public-room-sidebar h3 {
   font-size: 1.4em;
   background: linear-gradient(135deg, #00D4FF, #7B2CBF);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   margin: 0;

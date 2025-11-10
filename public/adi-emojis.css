@@ -1,0 +1,113 @@
+/* ADI Custom Emoji System - Quantum Animated Emojis */
+
+.adi-emoji {
+  display: inline-block;
+  width: 1.2em;
+  height: 1.2em;
+  vertical-align: middle;
+  transition: all 0.3s ease;
+  filter: drop-shadow(0 0 4px rgba(0, 212, 255, 0.3));
+}
+
+.adi-emoji:hover {
+  transform: scale(1.3);
+  filter: drop-shadow(0 0 12px rgba(0, 212, 255, 0.8));
+}
+
+/* Size variants */
+.adi-emoji.small {
+  width: 0.9em;
+  height: 0.9em;
+}
+
+.adi-emoji.large {
+  width: 2em;
+  height: 2em;
+}
+
+.adi-emoji.huge {
+  width: 4em;
+  height: 4em;
+}
+
+/* Pulsing animation for brain emoji */
+.adi-emoji.pulse {
+  animation: emoji-pulse 2s ease-in-out infinite;
+}
+
+@keyframes emoji-pulse {
+  0%, 100% { 
+    transform: scale(1); 
+    filter: drop-shadow(0 0 4px rgba(0, 212, 255, 0.3));
+  }
+  50% { 
+    transform: scale(1.1); 
+    filter: drop-shadow(0 0 12px rgba(123, 44, 191, 0.6));
+  }
+}
+
+/* Glow animation */
+.adi-emoji.glow {
+  animation: emoji-glow 3s ease-in-out infinite;
+}
+
+@keyframes emoji-glow {
+  0%, 100% { 
+    filter: drop-shadow(0 0 4px rgba(0, 212, 255, 0.4));
+  }
+  50% { 
+    filter: drop-shadow(0 0 16px rgba(255, 214, 10, 0.8));
+  }
+}
+
+/* Spin animation for star */
+.adi-emoji.spin {
+  animation: emoji-spin 4s linear infinite;
+}
+
+@keyframes emoji-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Float animation */
+.adi-emoji.float {
+  animation: emoji-float 2s ease-in-out infinite;
+}
+
+@keyframes emoji-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+/* Emoji in user icons */
+.user-icon .adi-emoji {
+  width: 1.4em;
+  height: 1.4em;
+  vertical-align: middle;
+}
+
+/* Emoji in headers */
+h3 .adi-emoji,
+h4 .adi-emoji {
+  width: 1.3em;
+  height: 1.3em;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+/* Emoji in messages */
+.msg-text .adi-emoji {
+  width: 1.1em;
+  height: 1.1em;
+  vertical-align: middle;
+  margin: 0 2px;
+}
+
+/* Emoji in system messages */
+.msg-system-text .adi-emoji {
+  width: 1em;
+  height: 1em;
+  vertical-align: middle;
+  margin-right: 4px;
+}

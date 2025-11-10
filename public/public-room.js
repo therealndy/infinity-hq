@@ -4,6 +4,11 @@ let lastMessageId = 0;
 let currentUserName = '';
 let roomId = 'infinity-public';
 
+// Render custom ADI emoji
+function emoji(name, className = '') {
+  return `<svg class="adi-emoji ${className}"><use href="adi-emojis.svg#emoji-${name}"></use></svg>`;
+}
+
 // Initialize public room mode
 function initPublicRoom() {
   console.log('🌐 Public room mode initializing...');
@@ -34,15 +39,27 @@ function joinPublicRoom(userName) {
 
 // Show public room interface
 function showPublicRoomUI() {
-  const container = document.getElementById('chat-container');
-  if (!container) return;
+  // Hide old UI completely
+  const header = document.querySelector('header');
+  const main = document.querySelector('main');
   
-  // Replace existing chat with public room layout
-  container.innerHTML = `
+  if (header) header.style.display = 'none';
+  if (main) main.style.display = 'none';
+  
+  // Create full-screen public room container
+  let roomContainer = document.getElementById('public-room-fullscreen');
+  if (!roomContainer) {
+    roomContainer = document.createElement('div');
+    roomContainer.id = 'public-room-fullscreen';
+    document.body.appendChild(roomContainer);
+  }
+  
+  // Replace with public room layout
+  roomContainer.innerHTML = `
     <div class="public-room-container">
       <!-- Left sidebar: Active users -->
       <div class="public-room-sidebar">
-        <h3>🧠 INFINITY ROOM</h3>
+        <h3>${emoji('brain', 'pulse')} INFINITY ROOM</h3>
         <div class="room-status">
           <span class="status-dot"></span>
           <span>LIVE</span>
@@ -159,7 +176,7 @@ async function sendJoinNotification(userName) {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       user: 'SYSTEM',
-      message: `${userName} har joinet rummet 🌟`
+      message: `${userName} har joinet rummet ${emoji('star', 'spin')}`
     })
   });
 }
@@ -216,13 +233,13 @@ function updateUserList(users) {
   const allUsers = ['ADI', ...users];
   
   listEl.innerHTML = allUsers.map((user, index) => {
-    const icons = ['🧠', '💡', '⚡', '🌟', '💜', '🔥'];
-    const icon = user === 'ADI' ? '🧠' : icons[index % icons.length];
+    const icons = ['brain', 'spark', 'bolt', 'star', 'heart', 'fire'];
+    const iconName = user === 'ADI' ? 'brain' : icons[index % icons.length];
     
     return `
       <div class="active-user ${user === 'ADI' ? 'user-adi' : ''}">
         <span class="user-particle"></span>
-        <span class="user-icon">${icon}</span>
+        <span class="user-icon">${emoji(iconName, 'glow')}</span>
         <span class="user-name">${escapeHtml(user)}</span>
       </div>
     `;

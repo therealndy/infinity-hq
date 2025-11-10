@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  
+  <!-- EMOJI: BRAIN -->
+  <symbol id="emoji-brain" viewBox="0 0 64 64">
+    <defs>
+      <linearGradient id="brain-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#00D4FF;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#7B2CBF;stop-opacity:1" />
+      </linearGradient>
+      <filter id="brain-glow">
+        <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+        <feMerge>
+          <feMergeNode in="coloredBlur"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+    <path d="M32 8 C20 8 12 16 12 28 C12 36 16 42 22 46 L20 56 L28 52 L32 58 L36 52 L44 56 L42 46 C48 42 52 36 52 28 C52 16 44 8 32 8 Z" 
+          fill="url(#brain-grad)" filter="url(#brain-glow)" opacity="0.9"/>
+    <circle cx="24" cy="24" r="3" fill="#00D4FF">
+      <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="32" cy="20" r="3" fill="#7B2CBF">
+      <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" begin="0.3s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="40" cy="24" r="3" fill="#FFD60A">
+      <animate attributeName="opacity" values="0.5;1;0.5" dur="2s" begin="0.6s" repeatCount="indefinite"/>
+    </circle>
+    <line x1="24" y1="24" x2="32" y2="20" stroke="#00D4FF" stroke-width="1" opacity="0.6"/>
+    <line x1="32" y1="20" x2="40" y2="24" stroke="#7B2CBF" stroke-width="1" opacity="0.6"/>
+  </symbol>
+
+  <!-- EMOJI: SPARK -->
+  <symbol id="emoji-spark" viewBox="0 0 64 64">
+    <defs>
+      <radialGradient id="spark-grad">
+        <stop offset="0%" style="stop-color:#FFD60A;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#00D4FF;stop-opacity:0.5" />
+      </radialGradient>
+    </defs>
+    <ellipse cx="32" cy="28" rx="14" ry="16" fill="url(#spark-grad)">
+      <animate attributeName="opacity" values="0.7;1;0.7" dur="1.5s" repeatCount="indefinite"/>
+    </ellipse>
+    <rect x="26" y="44" width="12" height="8" rx="2" fill="#7B2CBF"/>
+    <circle cx="18" cy="18" r="2" fill="#FFD60A">
+      <animate attributeName="cy" values="18;14;18" dur="1s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="46" cy="18" r="2" fill="#00D4FF">
+      <animate attributeName="cy" values="18;14;18" dur="1s" begin="0.5s" repeatCount="indefinite"/>
+    </circle>
+  </symbol>
+
+  <!-- EMOJI: BOLT -->
+  <symbol id="emoji-bolt" viewBox="0 0 64 64">
+    <defs>
+      <linearGradient id="bolt-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#FFD60A;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#00D4FF;stop-opacity:1" />
+      </linearGradient>
+    </defs>
+    <path d="M38 8 L28 32 L36 32 L26 56 L44 28 L36 28 Z" fill="url(#bolt-grad)">
+      <animate attributeName="opacity" values="1;0.6;1" dur="0.8s" repeatCount="indefinite"/>
+    </path>
+    <circle cx="40" cy="20" r="1.5" fill="#FFD60A">
+      <animate attributeName="r" values="1.5;2.5;1.5" dur="0.6s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="28" cy="44" r="1.5" fill="#00D4FF">
+      <animate attributeName="r" values="1.5;2.5;1.5" dur="0.6s" begin="0.3s" repeatCount="indefinite"/>
+    </circle>
+  </symbol>
+
+  <!-- EMOJI: STAR -->
+  <symbol id="emoji-star" viewBox="0 0 64 64">
+    <defs>
+      <linearGradient id="star-grad">
+        <stop offset="0%" style="stop-color:#FFD60A;stop-opacity:1" />
+        <stop offset="50%" style="stop-color:#7B2CBF;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#00D4FF;stop-opacity:1" />
+      </linearGradient>
+    </defs>
+    <g fill="url(#star-grad)">
+      <animateTransform attributeName="transform" type="rotate" from="0 32 32" to="360 32 32" dur="4s" repeatCount="indefinite"/>
+      <path d="M32 8 L36 28 L56 32 L36 36 L32 56 L28 36 L8 32 L28 28 Z"/>
+      <path d="M32 14 L38 28 L50 32 L38 36 L32 50 L26 36 L14 32 L26 28 Z" opacity="0.6"/>
+    </g>
+  </symbol>
+
+  <!-- EMOJI: HEART -->
+  <symbol id="emoji-heart" viewBox="0 0 64 64">
+    <defs>
+      <linearGradient id="heart-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#7B2CBF;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#FFD60A;stop-opacity:1" />
+      </linearGradient>
+    </defs>
+    <path d="M32 52 C10 36 8 24 16 16 C20 12 26 12 32 18 C38 12 44 12 48 16 C56 24 54 36 32 52 Z" 
+          fill="url(#heart-grad)">
+      <animateTransform attributeName="transform" type="scale" values="1;1.1;1" dur="1.2s" 
+                        additive="sum" repeatCount="indefinite"/>
+    </path>
+  </symbol>
+
+  <!-- EMOJI: FIRE -->
+  <symbol id="emoji-fire" viewBox="0 0 64 64">
+    <defs>
+      <linearGradient id="fire-grad" x1="0%" y1="100%" x2="0%" y2="0%">
+        <stop offset="0%" style="stop-color:#FFD60A;stop-opacity:1" />
+        <stop offset="50%" style="stop-color:#FF6B00;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#00D4FF;stop-opacity:0.8" />
+      </linearGradient>
+    </defs>
+    <path d="M32 8 C28 14 26 20 26 28 C26 38 28 44 32 56 C36 44 38 38 38 28 C38 20 36 14 32 8 Z" 
+          fill="url(#fire-grad)">
+      <animate attributeName="d" 
+               values="M32 8 C28 14 26 20 26 28 C26 38 28 44 32 56 C36 44 38 38 38 28 C38 20 36 14 32 8 Z;
+                       M32 8 C30 14 28 20 28 28 C28 38 30 44 32 56 C34 44 36 38 36 28 C36 20 34 14 32 8 Z;
+                       M32 8 C28 14 26 20 26 28 C26 38 28 44 32 56 C36 44 38 38 38 28 C38 20 36 14 32 8 Z"
+               dur="1s" repeatCount="indefinite"/>
+    </path>
+    <path d="M32 16 C30 20 29 24 29 30 C29 36 30 40 32 48 C34 40 35 36 35 30 C35 24 34 20 32 16 Z" 
+          fill="#FFD60A" opacity="0.8"/>
+  </symbol>
+
+  <!-- EMOJI: SMILE -->
+  <symbol id="emoji-smile" viewBox="0 0 64 64">
+    <defs>
+      <radialGradient id="smile-grad">
+        <stop offset="0%" style="stop-color:#FFD60A;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#7B2CBF;stop-opacity:0.8" />
+      </radialGradient>
+    </defs>
+    <circle cx="32" cy="32" r="24" fill="url(#smile-grad)">
+      <animate attributeName="opacity" values="0.9;1;0.9" dur="2s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="24" cy="28" r="3" fill="#00D4FF"/>
+    <circle cx="40" cy="28" r="3" fill="#00D4FF"/>
+    <path d="M20 38 Q32 48 44 38" stroke="#00D4FF" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </symbol>
+
+  <!-- EMOJI: THINK -->
+  <symbol id="emoji-think" viewBox="0 0 64 64">
+    <defs>
+      <linearGradient id="think-grad">
+        <stop offset="0%" style="stop-color:#00D4FF;stop-opacity:0.8" />
+        <stop offset="100%" style="stop-color:#7B2CBF;stop-opacity:0.6" />
+      </linearGradient>
+    </defs>
+    <ellipse cx="32" cy="36" rx="20" ry="16" fill="url(#think-grad)" opacity="0.8"/>
+    <ellipse cx="20" cy="20" rx="8" ry="6" fill="url(#think-grad)" opacity="0.6"/>
+    <circle cx="14" cy="12" r="3" fill="url(#think-grad)" opacity="0.4"/>
+    <circle cx="28" cy="32" r="2" fill="#FFD60A">
+      <animate attributeName="opacity" values="0.5;1;0.5" dur="1.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="36" cy="32" r="2" fill="#00D4FF">
+      <animate attributeName="opacity" values="0.5;1;0.5" dur="1.5s" begin="0.5s" repeatCount="indefinite"/>
+    </circle>
+  </symbol>
+
+  <!-- EMOJI: SCIENCE -->
+  <symbol id="emoji-science" viewBox="0 0 64 64">
+    <defs>
+      <linearGradient id="science-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#00D4FF;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#7B2CBF;stop-opacity:1" />
+      </linearGradient>
+    </defs>
+    <rect x="24" y="12" width="16" height="4" fill="#7B2CBF"/>
+    <path d="M28 16 L28 28 L20 44 L44 44 L36 28 L36 16 Z" fill="url(#science-grad)" opacity="0.8"/>
+    <circle cx="32" cy="36" r="3" fill="#FFD60A">
+      <animate attributeName="cy" values="36;32;36" dur="1.5s" repeatCount="indefinite"/>
+    </circle>
+    <line x1="32" y1="20" x2="32" y2="8" stroke="#00D4FF" stroke-width="2">
+      <animate attributeName="opacity" values="0;1;0" dur="2s" repeatCount="indefinite"/>
+    </line>
+  </symbol>
+
+  <!-- EMOJI: INFINITY -->
+  <symbol id="emoji-infinity" viewBox="0 0 64 64">
+    <defs>
+      <linearGradient id="infinity-grad">
+        <stop offset="0%" style="stop-color:#00D4FF;stop-opacity:1">
+          <animate attributeName="stop-color" values="#00D4FF;#7B2CBF;#FFD60A;#00D4FF" dur="3s" repeatCount="indefinite"/>
+        </stop>
+        <stop offset="50%" style="stop-color:#7B2CBF;stop-opacity:1">
+          <animate attributeName="stop-color" values="#7B2CBF;#FFD60A;#00D4FF;#7B2CBF" dur="3s" repeatCount="indefinite"/>
+        </stop>
+        <stop offset="100%" style="stop-color:#FFD60A;stop-opacity:1">
+          <animate attributeName="stop-color" values="#FFD60A;#00D4FF;#7B2CBF;#FFD60A" dur="3s" repeatCount="indefinite"/>
+        </stop>
+      </linearGradient>
+    </defs>
+    <path d="M8 32 C8 24 14 18 20 18 C26 18 30 22 32 26 C34 22 38 18 44 18 C50 18 56 24 56 32 C56 40 50 46 44 46 C38 46 34 42 32 38 C30 42 26 46 20 46 C14 46 8 40 8 32 Z" 
+          fill="none" stroke="url(#infinity-grad)" stroke-width="4" stroke-linecap="round"/>
+  </symbol>
+
+</svg>
