@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Infinity HQ - Demo Room</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="adi-voice.css">
+  <style>
+    /* Hide auth modal completely */
+    #authModal { display: none !important; }
+    
+    /* Demo banner */
+    .demo-banner {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 10px;
+      text-align: center;
+      font-weight: bold;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 10000;
+    }
+    
+    body { margin-top: 40px; }
+  </style>
+</head>
+<body>
+  <div class="demo-banner">
+    🎯 DEMO MODE - Direct Room Access (No Login Required)
+  </div>
+
+  <div id="adi-icons-loader" style="display: none;"></div>
+  
+  <div class="container">
+    <!-- Top Bar -->
+    <div class="top-bar">
+      <div class="logo">
+        <svg class="logo-icon" width="32" height="32" viewBox="0 0 100 100">
+          <circle cx="50" cy="50" r="45" fill="url(#gradient)" />
+          <text x="50" y="65" font-size="50" font-weight="bold" fill="white" text-anchor="middle">∞</text>
+          <defs>
+            <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#667eea" />
+              <stop offset="100%" style="stop-color:#764ba2" />
+            </linearGradient>
+          </defs>
+        </svg>
+        <span>Infinity HQ</span>
+      </div>
+      
+      <div class="user-info">
+        <span id="userEmail">Demo User</span>
+        <button id="logoutBtn" style="display: none;" class="btn btn-secondary">Logout</button>
+      </div>
+    </div>
+
+    <!-- Main Chat -->
+    <div class="chat-container">
+      <div class="room-header">
+        <span>Room: <strong id="currentRoomName">demo-room</strong></span>
+        <div class="room-actions">
+          <button id="togglePhysicsBtn" class="btn btn-sm">🌌 Physics: OFF</button>
+          <button id="voiceToggle" class="btn btn-sm">🔊 Voice: ON</button>
+        </div>
+      </div>
+      
+      <div id="messages" class="messages"></div>
+      
+      <div class="message-input-container">
+        <input type="text" id="messageInput" placeholder="Type a message..." class="message-input">
+        <button id="sendBtn" class="btn btn-primary">Send</button>
+      </div>
+    </div>
+
+    <!-- Canvas for Physics -->
+    <canvas id="physicsCanvas"></canvas>
+  </div>
+
+  <!-- Resources Panel -->
+  <div class="resources">
+    <h3>System Resources</h3>
+    <div id="resources-content"></div>
+  </div>
+
+  <!-- ADI Voice System -->
+  <div id="adi-voice-container"></div>
+
+  <script src="adi-voice.js"></script>
+  <script>
+    // Demo mode - auto-authenticate with demo credentials
+    let token = 'demo-token';
+    let userId = 'demo-user';
+    let userEmail = 'demo@infinityhq.ai';
+    let ws = null;
+    let currentRoom = 'demo-room';
+    let roomKeys = new Map();
+    let canvas, ctx;
+    let particles = [];
+    let physicsEnabled = false;
+
+    // Get room from URL or use default
+    const urlParams = new URLSearchParams(window.location.search);
+    const roomParam = urlParams.get('room');
+    if (roomParam) {
+      currentRoom = roomParam;
+      document.getElementById('currentRoomName').textContent = currentRoom;
+    }
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('🎯 DEMO MODE ACTIVATED');
+      console.log('Room:', currentRoom);
+      
+      setupCanvas();
+      setupEventListeners();
+      updateResources();
+      connectWebSocket();
+      
+      // Welcome message
+      appendMessage('system', `✨ Welcome to Infinity HQ Demo!`);
+      appendMessage('system', `🎯 Room: ${currentRoom}`);
+      appendMessage('system', `💜 ADI is ready to assist you!`);
+      
+      // Auto-greet with ADI voice
+      setTimeout(() => {
+        speakWithADI(`Welcome to Infinity HQ! I am ADI, your AI assistant. This is the ${currentRoom} demonstration room. How can I help you today?`);
+      }, 1000);
+    });
+
+    // Setup Canvas
+    function setupCanvas() {
+      canvas = document.getElementById('physicsCanvas');
+      ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      
+      window.addEventListener('resize', () => {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      });
+    }
+
+    // Setup Event Listeners
+    function setupEventListeners() {
+      document.getElementById('sendBtn').addEventListener('click', sendMessage);
+      document.getElementById('messageInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+      });
+      
+      document.getElementById('togglePhysicsBtn').addEventListener('click', togglePhysics);
+      
+      // Voice toggle
+      const voiceToggle = document.getElementById('voiceToggle');
+      if (voiceToggle) {
+        voiceToggle.addEventListener('click', () => {
+          if (typeof toggleVoice === 'function') {
+            toggleVoice();
+          }
+        });
+      }
+    }
+
+    // WebSocket Connection
+    function connectWebSocket() {
+      const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+      ws = new WebSocket(`${protocol}//${location.host}`);
+      
+      ws.addEventListener('open', () => {
+        console.log('✅ WebSocket connected');
+        appendMessage('system', '🔗 Connected to server');
+        
+        // Join room
+        ws.send(JSON.stringify({
+          type: 'join',
+          roomId: currentRoom,
+          userId: userId,
+          email: userEmail
+        }));
+      });
+      
+      ws.addEventListener('message', (event) => {
+        const data = JSON.parse(event.data);
+        
+        if (data.type === 'message') {
+          appendMessage(data.userId === userId ? 'self' : 'other', data.message, data.email);
+          
+          // If message mentions ADI, respond
+          if (data.userId !== userId && data.message.toLowerCase().includes('adi')) {
+            handleADIMessage(data.message);
+          }
+        } else if (data.type === 'userJoined') {
+          appendMessage('system', `${data.email} joined the room`);
+        } else if (data.type === 'userLeft') {
+          appendMessage('system', `${data.email} left the room`);
+        }
+      });
+      
+      ws.addEventListener('close', () => {
+        appendMessage('system', '❌ Disconnected from server');
+      });
+      
+      ws.addEventListener('error', (error) => {
+        console.error('WebSocket error:', error);
+        appendMessage('system', '⚠️ Connection error');
+      });
+    }
+
+    // Send Message
+    function sendMessage() {
+      const input = document.getElementById('messageInput');
+      const message = input.value.trim();
+      
+      if (!message) return;
+      
+      ws.send(JSON.stringify({
+        type: 'message',
+        roomId: currentRoom,
+        userId: userId,
+        email: userEmail,
+        message: message
+      }));
+      
+      input.value = '';
+    }
+
+    // Append Message
+    function appendMessage(type, text, sender = '') {
+      const messagesDiv = document.getElementById('messages');
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `message ${type}`;
+      
+      if (type === 'system') {
+        msgDiv.textContent = text;
+      } else {
+        const senderSpan = document.createElement('strong');
+        senderSpan.textContent = sender || (type === 'self' ? userEmail : 'User');
+        msgDiv.appendChild(senderSpan);
+        msgDiv.appendChild(document.createTextNode(': ' + text));
+      }
+      
+      messagesDiv.appendChild(msgDiv);
+      messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    // Handle ADI Message
+    function handleADIMessage(message) {
+      setTimeout(() => {
+        let response = "I'm here to help! What would you like to know?";
+        
+        // Simple keyword responses
+        if (message.toLowerCase().includes('hello') || message.toLowerCase().includes('hi')) {
+          response = "Hello! I'm ADI, your AI assistant. How can I assist you today?";
+        } else if (message.toLowerCase().includes('help')) {
+          response = "I can help you with information, answer questions, and provide assistance. Just ask!";
+        } else if (message.toLowerCase().includes('demo')) {
+          response = "This is the Infinity HQ demo! We have voice capabilities, real-time chat, and AI integration. What would you like to explore?";
+        }
+        
+        // Send ADI response
+        ws.send(JSON.stringify({
+          type: 'message',
+          roomId: currentRoom,
+          userId: 'adi-system',
+          email: 'ADI 🤖',
+          message: response
+        }));
+        
+        // Speak response
+        speakWithADI(response);
+      }, 500);
+    }
+
+    // Speak with ADI voice
+    function speakWithADI(text) {
+      if (typeof window.adiVoice !== 'undefined' && window.adiVoice.isEnabled) {
+        window.adiVoice.speak(text);
+      }
+    }
+
+    // Physics Toggle
+    function togglePhysics() {
+      physicsEnabled = !physicsEnabled;
+      const btn = document.getElementById('togglePhysicsBtn');
+      btn.textContent = `🌌 Physics: ${physicsEnabled ? 'ON' : 'OFF'}`;
+      
+      if (physicsEnabled) {
+        startPhysics();
+      } else {
+        stopPhysics();
+      }
+    }
+
+    function startPhysics() {
+      // Create particles
+      for (let i = 0; i < 50; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          vx: (Math.random() - 0.5) * 2,
+          vy: (Math.random() - 0.5) * 2,
+          radius: Math.random() * 3 + 1
+        });
+      }
+      animate();
+    }
+
+    function stopPhysics() {
+      particles = [];
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function animate() {
+      if (!physicsEnabled) return;
+      
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      particles.forEach(p => {
+        p.x += p.vx;
+        p.y += p.vy;
+        
+        if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+        if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+        
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fillStyle = '#667eea';
+        ctx.fill();
+      });
+      
+      requestAnimationFrame(animate);
+    }
+
+    // Update Resources
+    function updateResources() {
+      const resourcesDiv = document.getElementById('resources-content');
+      
+      setInterval(() => {
+        const memoryUsage = (performance.memory?.usedJSHeapSize / 1048576).toFixed(2) || 'N/A';
+        const connections = ws && ws.readyState === WebSocket.OPEN ? '✅ Connected' : '❌ Disconnected';
+        
+        resourcesDiv.innerHTML = `
+          <p><strong>Memory:</strong> ${memoryUsage} MB</p>
+          <p><strong>WebSocket:</strong> ${connections}</p>
+          <p><strong>Room:</strong> ${currentRoom}</p>
+          <p><strong>Particles:</strong> ${particles.length}</p>
+        `;
+      }, 1000);
+    }
+  </script>
+</body>
+</html>

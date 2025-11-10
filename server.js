@@ -57,6 +57,108 @@ app.get('/api/status', (req, res) => {
   });
 });
 
+// Combined auth endpoint (for client compatibility)
+app.post('/api/auth', async (req, res) => {
+  try {
+    const { email, password, username } = req.body;
+    
+    // If username provided, it's a registration
+    if (username) {
+      // REGISTER
+      if (!email || !username || !password) {
+        return res.status(400).json({ error: 'missing_fields', message: 'Email, username and password required' });
+      }
+      
+      if (!auth.isValidEmail(email)) {
+        return res.status(400).json({ error: 'invalid_email', message: 'Invalid email format' });
+      }
+      
+      if (!auth.isValidPassword(password)) {
+        return res.status(400).json({ error: 'weak_password', message: 'Password must be at least 8 characters' });
+      }
+      
+      // Check if user exists
+      const existing = await db.userOps.findByEmail(email);
+      if (existing) {
+        return res.status(409).json({ error: 'user_exists', message: 'Email already registered' });
+      }
+      
+      // Hash password
+      const passwordHash = await auth.hashPassword(password);
+      
+      // Create user
+      const user = await db.userOps.create({ email, username, passwordHash });
+      
+      // Generate tokens
+      const accessToken = auth.generateAccessToken(user.id, user.email);
+      const refreshToken = auth.generateRefreshToken(user.id);
+      
+      // Store refresh token
+      const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+      await db.tokenOps.create({ userId: user.id, token: refreshToken, expiresAt });
+      
+      // Set httpOnly cookie
+      res.cookie('accessToken', accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 15 * 60 * 1000
+      });
+      
+      return res.json({ 
+        user: { id: user.id, email: user.email, username: user.username },
+        accessToken,
+        refreshToken
+      });
+    } else {
+      // LOGIN
+      if (!email || !password) {
+        return res.status(400).json({ error: 'missing_fields', message: 'Email and password required' });
+      }
+      
+      // Find user
+      const user = await db.userOps.findByEmail(email);
+      if (!user) {
+        return res.status(401).json({ error: 'invalid_credentials', message: 'Invalid email or password' });
+      }
+      
+      // Verify password
+      const validPassword = await auth.comparePassword(password, user.password_hash);
+      if (!validPassword) {
+        return res.status(401).json({ error: 'invalid_credentials', message: 'Invalid email or password' });
+      }
+      
+      // Update last login
+      await db.userOps.updateLastLogin(user.id);
+      
+      // Generate tokens
+      const accessToken = auth.generateAccessToken(user.id, user.email);
+      const refreshToken = auth.generateRefreshToken(user.id);
+      
+      // Store refresh token
+      const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+      await db.tokenOps.create({ userId: user.id, token: refreshToken, expiresAt });
+      
+      // Set httpOnly cookie
+      res.cookie('accessToken', accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+        maxAge: 15 * 60 * 1000
+      });
+      
+      return res.json({ 
+        user: { id: user.id, email: user.email, username: user.username },
+        accessToken,
+        refreshToken
+      });
+    }
+  } catch (error) {
+    console.error('Auth error:', error);
+    res.status(500).json({ error: 'internal_error', message: 'Authentication failed' });
+  }
+});
+
 // Register endpoint
 app.post('/api/auth/register', async (req, res) => {
   try {
