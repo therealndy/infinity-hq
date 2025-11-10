@@ -10,6 +10,7 @@ const path = require('path');
 // Import modules
 const auth = require('./auth');
 const cryptoModule = require('./crypto');
+const { handleADIChat } = require('./adi-chat');
 let db = require('./database');
 
 // Fallback to in-memory storage if no database
@@ -358,6 +359,9 @@ wss.on('connection', (ws, req) => {
   console.log('ws connected');
   
   let userId = null;
+  
+  // Initialize ADI Chat Handler
+  handleADIChat(ws, wss);
   
   ws.on('message', (msg) => {
     try {
