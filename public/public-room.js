@@ -39,76 +39,88 @@ function joinPublicRoom(userName) {
 
 // Show public room interface
 function showPublicRoomUI() {
-  // Hide old UI completely
-  const header = document.querySelector('header');
-  const main = document.querySelector('main');
+  console.log('🎨 Showing public room UI...');
   
-  if (header) header.style.display = 'none';
-  if (main) main.style.display = 'none';
-  
-  // Create full-screen public room container
-  let roomContainer = document.getElementById('public-room-fullscreen');
-  if (!roomContainer) {
-    roomContainer = document.createElement('div');
-    roomContainer.id = 'public-room-fullscreen';
-    document.body.appendChild(roomContainer);
-  }
-  
-  // Replace with public room layout
-  roomContainer.innerHTML = `
-    <div class="public-room-container">
-      <!-- Left sidebar: Active users -->
-      <div class="public-room-sidebar">
-        <h3>${emoji('brain', 'pulse')} INFINITY ROOM</h3>
-        <div class="room-status">
-          <span class="status-dot"></span>
-          <span>LIVE</span>
+  try {
+    // Hide old UI completely
+    const header = document.querySelector('header');
+    const main = document.querySelector('main');
+    
+    if (header) header.style.display = 'none';
+    if (main) main.style.display = 'none';
+    
+    // Create full-screen public room container
+    let roomContainer = document.getElementById('public-room-fullscreen');
+    if (!roomContainer) {
+      roomContainer = document.createElement('div');
+      roomContainer.id = 'public-room-fullscreen';
+      document.body.appendChild(roomContainer);
+    }
+    
+    // Replace with public room layout
+    roomContainer.innerHTML = `
+      <div class="public-room-container">
+        <!-- Left sidebar: Active users -->
+        <div class="public-room-sidebar">
+          <h3>${emoji('brain', 'pulse')} INFINITY ROOM</h3>
+          <div class="room-status">
+            <span class="status-dot"></span>
+            <span>LIVE</span>
+          </div>
+          <div class="active-users-section">
+            <h4>Active Users</h4>
+            <div id="active-users-list"></div>
+          </div>
         </div>
-        <div class="active-users-section">
-          <h4>Active Users</h4>
-          <div id="active-users-list"></div>
-        </div>
-      </div>
-      
-      <!-- Right: Chat area -->
-      <div class="public-room-chat">
-        <div id="public-room-messages" class="public-messages-area"></div>
         
-        <!-- Input area -->
-        <div class="public-input-area">
-          <input 
-            type="text" 
-            id="public-room-input" 
-            placeholder="Message the group..."
-            autocomplete="off"
-          />
-          <button id="public-send-btn" class="public-send-button">
-            <svg class="adi-icon">
-              <use href="adi-icons.svg#send"></use>
-            </svg>
-          </button>
+        <!-- Right: Chat area -->
+        <div class="public-room-chat">
+          <div id="public-room-messages" class="public-messages-area"></div>
+          
+          <!-- Input area -->
+          <div class="public-input-area">
+            <input 
+              type="text" 
+              id="public-room-input" 
+              placeholder="Message the group..."
+              autocomplete="off"
+            />
+            <button id="public-send-btn" class="public-send-button">
+              <svg class="adi-icon">
+                <use href="adi-icons.svg#send"></use>
+              </svg>
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-  `;
-  
-  // Setup event listeners
-  const input = document.getElementById('public-room-input');
-  const sendBtn = document.getElementById('public-send-btn');
-  
-  input.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter' && input.value.trim()) {
-      sendToPublicRoom(input.value.trim());
+    `;
+    
+    // Setup event listeners
+    const input = document.getElementById('public-room-input');
+    const sendBtn = document.getElementById('public-send-btn');
+    
+    if (!input || !sendBtn) {
+      console.error('❌ Failed to find input elements');
+      return;
     }
-  });
-  
-  sendBtn.addEventListener('click', () => {
-    if (input.value.trim()) {
-      sendToPublicRoom(input.value.trim());
-    }
-  });
-  
-  console.log('✅ Public room UI ready');
+    
+    input.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' && input.value.trim()) {
+        sendToPublicRoom(input.value.trim());
+      }
+    });
+    
+    sendBtn.addEventListener('click', () => {
+      if (input.value.trim()) {
+        sendToPublicRoom(input.value.trim());
+      }
+    });
+    
+    console.log('✅ Public room UI ready');
+    
+  } catch (error) {
+    console.error('💥 Error showing public room UI:', error);
+  }
 }
 
 // Poll room for new messages
@@ -117,55 +129,71 @@ async function pollRoomMessages() {
     const res = await fetch(`/api/room?room=${roomId}`);
     
     if (!res.ok) {
-      console.error('Poll failed:', res.status);
+      console.error('❌ Poll failed:', res.status);
       return;
     }
     
     const data = await res.json();
     
-    // Update active users list
-    updateUserList(data.users);
+    // Update active users list (safely)
+    if (data.users) {
+      updateUserList(data.users);
+    }
     
-    // Add new messages
-    if (data.messages && data.messages.length > 0) {
+    // Add new messages (safely)
+    if (data.messages && Array.isArray(data.messages)) {
       data.messages.forEach(msg => {
-        if (msg.id > lastMessageId) {
+        if (msg && msg.id && msg.id > lastMessageId) {
           addPublicMessage(msg);
           lastMessageId = msg.id;
         }
       });
     }
   } catch (error) {
-    console.error('Poll error:', error);
+    console.error('💥 Poll error:', error);
+    // Don't crash - just skip this poll cycle
   }
 }
 
 // Send message to public room
 async function sendToPublicRoom(message) {
+  if (!message || !message.trim()) {
+    console.warn('⚠️ Empty message, skipping');
+    return;
+  }
+  
   try {
+    console.log(`📤 Sending: "${message}"`);
+    
     const res = await fetch(`/api/room?room=${roomId}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         user: currentUserName,
-        message
+        message: message.trim()
       })
     });
     
     if (!res.ok) {
-      throw new Error(`Failed to send: ${res.status}`);
+      const errorText = await res.text();
+      throw new Error(`Failed to send (${res.status}): ${errorText}`);
     }
+    
+    const data = await res.json();
+    console.log('✅ Message sent:', data);
     
     // Clear input
     const input = document.getElementById('public-room-input');
-    if (input) input.value = '';
+    if (input) {
+      input.value = '';
+    }
     
     // Check if ADI should respond
     checkADIResponse(message);
     
   } catch (error) {
-    console.error('Send error:', error);
-    alert('Failed to send message. Please try again.');
+    console.error('💥 Send error:', error);
+    alert(`Failed to send message: ${error.message}`);
   }
 }
 
@@ -183,67 +211,87 @@ async function sendJoinNotification(userName) {
 
 // Add message to public chat display
 function addPublicMessage(msg) {
-  const messagesDiv = document.getElementById('public-room-messages');
-  if (!messagesDiv) return;
-  
-  const msgEl = document.createElement('div');
-  
-  // Different styling for different users
-  let msgClass = 'public-msg';
-  if (msg.user === 'ADI') {
-    msgClass += ' public-msg-adi';
-  } else if (msg.user === 'SYSTEM') {
-    msgClass += ' public-msg-system';
-  } else if (msg.user === currentUserName) {
-    msgClass += ' public-msg-self';
-  } else {
-    msgClass += ' public-msg-other';
+  try {
+    const messagesDiv = document.getElementById('public-room-messages');
+    if (!messagesDiv) {
+      console.warn('⚠️ Messages div not found');
+      return;
+    }
+    
+    const msgEl = document.createElement('div');
+    
+    // Different styling for different users
+    let msgClass = 'public-msg';
+    if (msg.user === 'ADI') {
+      msgClass += ' public-msg-adi';
+    } else if (msg.user === 'SYSTEM') {
+      msgClass += ' public-msg-system';
+    } else if (msg.user === currentUserName) {
+      msgClass += ' public-msg-self';
+    } else {
+      msgClass += ' public-msg-other';
+    }
+    
+    msgEl.className = msgClass;
+    
+    // Format timestamp
+    const time = new Date(msg.timestamp).toLocaleTimeString('sv-SE', { 
+      hour: '2-digit', 
+      minute: '2-digit' 
+    });
+    
+    if (msg.user === 'SYSTEM') {
+      // System messages can contain emoji SVGs - don't escape
+      msgEl.innerHTML = `<span class="msg-system-text">${msg.message}</span>`;
+    } else {
+      msgEl.innerHTML = `
+        <div class="msg-header">
+          <span class="msg-user">${escapeHtml(msg.user)}</span>
+          <span class="msg-time">${time}</span>
+        </div>
+        <div class="msg-text">${escapeHtml(msg.message).replace(/\n/g, '<br>')}</div>
+      `;
+    }
+    
+    messagesDiv.appendChild(msgEl);
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    
+  } catch (error) {
+    console.error('💥 Error adding message:', error);
   }
-  
-  msgEl.className = msgClass;
-  
-  // Format timestamp
-  const time = new Date(msg.timestamp).toLocaleTimeString('sv-SE', { 
-    hour: '2-digit', 
-    minute: '2-digit' 
-  });
-  
-  if (msg.user === 'SYSTEM') {
-    msgEl.innerHTML = `<span class="msg-system-text">${escapeHtml(msg.message)}</span>`;
-  } else {
-    msgEl.innerHTML = `
-      <div class="msg-header">
-        <span class="msg-user">${escapeHtml(msg.user)}</span>
-        <span class="msg-time">${time}</span>
-      </div>
-      <div class="msg-text">${escapeHtml(msg.message).replace(/\n/g, '<br>')}</div>
-    `;
-  }
-  
-  messagesDiv.appendChild(msgEl);
-  messagesDiv.scrollTop = messagesDiv.scrollHeight;
 }
 
 // Update active users list
 function updateUserList(users) {
-  const listEl = document.getElementById('active-users-list');
-  if (!listEl) return;
-  
-  // Add ADI as always active
-  const allUsers = ['ADI', ...users];
-  
-  listEl.innerHTML = allUsers.map((user, index) => {
-    const icons = ['brain', 'spark', 'bolt', 'star', 'heart', 'fire'];
-    const iconName = user === 'ADI' ? 'brain' : icons[index % icons.length];
+  try {
+    const listEl = document.getElementById('active-users-list');
+    if (!listEl) {
+      console.warn('⚠️ User list element not found');
+      return;
+    }
     
-    return `
-      <div class="active-user ${user === 'ADI' ? 'user-adi' : ''}">
-        <span class="user-particle"></span>
-        <span class="user-icon">${emoji(iconName, 'glow')}</span>
-        <span class="user-name">${escapeHtml(user)}</span>
-      </div>
-    `;
-  }).join('');
+    // Ensure users is an array
+    const userArray = Array.isArray(users) ? users : [];
+    
+    // Add ADI as always active
+    const allUsers = ['ADI', ...userArray];
+    
+    listEl.innerHTML = allUsers.map((user, index) => {
+      const icons = ['brain', 'spark', 'bolt', 'star', 'heart', 'fire'];
+      const iconName = user === 'ADI' ? 'brain' : icons[index % icons.length];
+      
+      return `
+        <div class="active-user ${user === 'ADI' ? 'user-adi' : ''}">
+          <span class="user-particle"></span>
+          <span class="user-icon">${emoji(iconName, 'glow')}</span>
+          <span class="user-name">${escapeHtml(user)}</span>
+        </div>
+      `;
+    }).join('');
+    
+  } catch (error) {
+    console.error('💥 Error updating user list:', error);
+  }
 }
 
 // Check if ADI should respond to message
