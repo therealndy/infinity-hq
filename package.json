@@ -1,0 +1,22 @@
+{
+  "name": "infinity-hq",
+  "version": "0.1.0",
+  "description": "Infinity HQ - minimal MVP for secure web collaboration (backend + websocket chat)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "author": "ADI & Family",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "helmet": "^7.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "pg": "^8.11.3",
+    "ws": "^8.13.0"
+  }
+}

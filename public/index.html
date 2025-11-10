@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="sv">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>∞ Infinity HQ — Command Center</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal show">
+      <div class="modal-content">
+        <h2>🔐 Infinity HQ Access</h2>
+        <div class="tabs">
+          <div class="tab active" data-tab="login">Login</div>
+          <div class="tab" data-tab="register">Register</div>
+        </div>
+        
+        <div id="loginForm">
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="loginEmail" placeholder="your@email.com" />
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="loginPassword" placeholder="••••••••" />
+          </div>
+          <button id="loginBtn" class="success" style="width: 100%;">Login</button>
+        </div>
+        
+        <div id="registerForm" style="display: none;">
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" id="registerEmail" placeholder="your@email.com" />
+          </div>
+          <div class="form-group">
+            <label>Password</label>
+            <input type="password" id="registerPassword" placeholder="••••••••" />
+          </div>
+          <button id="registerBtn" class="success" style="width: 100%;">Create Account</button>
+        </div>
+        
+        <p style="margin-top: 16px; font-size: 12px; color: #94a3b8; text-align: center;">
+          Demo mode: any email/password works
+        </p>
+      </div>
+    </div>
+
+    <header>
+      <div class="logo">
+        <div class="logo-symbol">∞</div>
+        <div>
+          <h1>Infinity HQ</h1>
+          <p style="font-size: 12px; opacity: 0.7; margin: 0;">Quantum-ready Command Center</p>
+        </div>
+      </div>
+      <div class="user-badge">
+        <div class="status-dot"></div>
+        <span id="userEmail">Not logged in</span>
+        <button id="logoutBtn" class="secondary" style="padding: 4px 12px; font-size: 12px; display: none;">Logout</button>
+      </div>
+    </header>
+
+    <main>
+      <!-- Left sidebar: Rooms & Resources -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="icon">🔐</span>
+          <h3>Encrypted Rooms</h3>
+        </div>
+        <div class="room-list" id="roomList">
+          <div class="room-item active" data-room="public">
+            <div class="room-name">Public Chat</div>
+            <div class="room-meta">Unencrypted · Open to all</div>
+          </div>
+        </div>
+        <div class="input-row">
+          <input type="text" id="newRoomName" placeholder="New room name..." />
+          <button id="createRoomBtn" class="success">Create</button>
+        </div>
+        
+        <div class="panel-header" style="margin-top: 24px;">
+          <span class="icon">📊</span>
+          <h3>Resources</h3>
+        </div>
+        <div id="resources">
+          <div class="resource-item">
+            <span class="resource-label">CPU Usage</span>
+            <span class="resource-value" id="cpuValue">0%</span>
+          </div>
+          <div class="resource-bar">
+            <div class="resource-fill" id="cpuBar" style="width: 0%;"></div>
+          </div>
+          
+          <div class="resource-item">
+            <span class="resource-label">Memory</span>
+            <span class="resource-value" id="memValue">0 MB</span>
+          </div>
+          <div class="resource-bar">
+            <div class="resource-fill" id="memBar" style="width: 0%;"></div>
+          </div>
+          
+          <div class="resource-item">
+            <span class="resource-label">Active Users</span>
+            <span class="resource-value" id="usersValue">1</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center: Chat & Canvas -->
+      <div>
+        <div class="panel">
+          <div class="panel-header">
+            <span class="icon">💬</span>
+            <h3 id="currentRoomName">Public Chat</h3>
+          </div>
+          <div id="chat"></div>
+          <div class="input-row">
+            <input type="text" id="msgInput" placeholder="Type a message..." />
+            <button id="sendBtn">Send</button>
+            <button id="clearBtn" class="secondary">Clear</button>
+          </div>
+        </div>
+        
+        <div class="panel" style="margin-top: 16px;">
+          <div class="panel-header">
+            <span class="icon">🎨</span>
+            <h3>Physics Whiteboard</h3>
+          </div>
+          <div id="whiteboard">
+            <div class="canvas-grid"></div>
+            <canvas id="canvas" width="800" height="400"></canvas>
+          </div>
+          <div class="input-row">
+            <button id="clearCanvasBtn" class="secondary">Clear Canvas</button>
+            <button id="gridToggleBtn" class="secondary">Toggle Grid</button>
+            <button id="physicsBtn">Physics Sim</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right sidebar: ADI & Tools -->
+      <div class="panel">
+        <div class="panel-header">
+          <span class="icon">🧠</span>
+          <h3>ADI Integration</h3>
+        </div>
+        <div class="input-row">
+          <input type="text" id="adiPrompt" placeholder="Ask ADI..." />
+          <button id="askAdiBtn" class="success">Ask</button>
+        </div>
+        <pre id="adiResponse">ADI response will appear here...</pre>
+        
+        <div class="panel-header" style="margin-top: 24px;">
+          <span class="icon">🔬</span>
+          <h3>Quantum Tools</h3>
+        </div>
+        <button id="generatePQBtn" style="width: 100%; margin-bottom: 8px;">Generate PQ Keypair</button>
+        <button id="testEncryptBtn" style="width: 100%;" class="secondary">Test E2E Encryption</button>
+        <pre id="cryptoOutput" style="margin-top: 12px; max-height: 200px; overflow-y: auto;">Crypto outputs...</pre>
+      </div>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
