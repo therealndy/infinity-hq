@@ -1,0 +1,256 @@
+/* Demo Join - Quantum Animation Styles */
+
+.demo-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.demo-modal.show {
+  opacity: 1;
+}
+
+.demo-modal.fade-out {
+  opacity: 0;
+}
+
+.demo-modal-content {
+  background: linear-gradient(135deg, rgba(10, 10, 15, 0.95) 0%, rgba(20, 10, 30, 0.95) 100%);
+  border: 2px solid;
+  border-image: linear-gradient(135deg, #00D4FF 0%, #7B2CBF 50%, #FFD60A 100%) 1;
+  border-radius: 24px;
+  padding: 48px;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 212, 255, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.demo-modal-content::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(0, 212, 255, 0.1) 0%, transparent 70%);
+  animation: demo-rotate 20s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes demo-rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.demo-header {
+  margin-bottom: 32px;
+  position: relative;
+  z-index: 1;
+}
+
+.demo-brain-pulse {
+  animation: demo-brain-pulse 2s ease-in-out infinite;
+  filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.6));
+}
+
+@keyframes demo-brain-pulse {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 20px rgba(0, 212, 255, 0.6));
+  }
+  50% {
+    transform: scale(1.1);
+    filter: drop-shadow(0 0 30px rgba(123, 44, 191, 0.8));
+  }
+}
+
+.demo-title {
+  font-size: 32px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #00D4FF 0%, #7B2CBF 50%, #FFD60A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 16px 0 8px;
+}
+
+.demo-subtitle {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 16px;
+  margin: 0;
+}
+
+.demo-form {
+  position: relative;
+  z-index: 1;
+}
+
+.demo-name-input {
+  width: 100%;
+  padding: 16px 24px;
+  font-size: 18px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(0, 212, 255, 0.3);
+  border-radius: 12px;
+  color: white;
+  outline: none;
+  transition: all 0.3s ease;
+  margin-bottom: 24px;
+}
+
+.demo-name-input:focus {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: #00D4FF;
+  box-shadow: 0 0 0 4px rgba(0, 212, 255, 0.1),
+              0 0 20px rgba(0, 212, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.demo-name-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.demo-name-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.demo-encryption {
+  margin: 24px 0;
+  min-height: 120px;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.demo-encryption.hidden {
+  display: none;
+}
+
+.demo-encryption:not(.hidden) {
+  opacity: 1;
+}
+
+.encryption-visual {
+  position: relative;
+  padding: 24px;
+}
+
+.quantum-particles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(0, 212, 255, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 80% 50%, rgba(123, 44, 191, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 50% 80%, rgba(255, 215, 10, 0.3) 0%, transparent 50%);
+  animation: demo-particles 3s ease-in-out infinite;
+}
+
+@keyframes demo-particles {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.2) rotate(180deg);
+    opacity: 1;
+  }
+}
+
+.encryption-text {
+  color: #00D4FF;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  animation: demo-blink 1s ease-in-out infinite;
+}
+
+@keyframes demo-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.neural-forming {
+  color: #7B2CBF;
+  font-size: 14px;
+  font-weight: 600;
+  animation: demo-blink 1s ease-in-out infinite 0.5s;
+}
+
+.demo-join-btn {
+  width: 100%;
+  padding: 16px 32px;
+  font-size: 18px;
+  font-weight: 600;
+  background: linear-gradient(135deg, #00D4FF 0%, #7B2CBF 100%);
+  border: none;
+  border-radius: 12px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
+}
+
+.demo-join-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 30px rgba(0, 212, 255, 0.5);
+}
+
+.demo-join-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.demo-join-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.demo-footer {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  z-index: 1;
+}
+
+.demo-id {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 12px;
+  font-family: 'Courier New', monospace;
+}
+
+/* Mobile responsive */
+@media (max-width: 600px) {
+  .demo-modal-content {
+    padding: 32px 24px;
+  }
+  
+  .demo-title {
+    font-size: 24px;
+  }
+  
+  .demo-name-input {
+    font-size: 16px;
+    padding: 14px 20px;
+  }
+  
+  .demo-join-btn {
+    font-size: 16px;
+    padding: 14px 28px;
+  }
+}
