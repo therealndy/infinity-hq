@@ -6,11 +6,8 @@ let isADITyping = false;
 let conversationHistory = [];
 
 function initADIChatUI() {
-  const chatContainer = document.getElementById('chat-container');
-  if (!chatContainer) {
-    console.warn('Chat container not found - ADI chat disabled');
-    return;
-  }
+  // Don't need chat-container anymore - ADI chat is independent
+  console.log('🧠 Initializing ADI Chat UI...');
   
   // Add ADI chat button
   const adiChatBtn = document.createElement('button');
