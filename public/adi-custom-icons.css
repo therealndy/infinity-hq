@@ -1,0 +1,60 @@
+/* ADI Custom Icons CSS */
+.adi-icon {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+    vertical-align: middle;
+}
+
+.adi-icon-lg {
+    width: 48px;
+    height: 48px;
+}
+
+.adi-icon-xl {
+    width: 64px;
+    height: 64px;
+}
+
+.adi-icon-animated {
+    animation: icon-pulse 2s ease-in-out infinite;
+}
+
+@keyframes icon-pulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+}
+
+.adi-icon-spin {
+    animation: icon-spin 2s linear infinite;
+}
+
+@keyframes icon-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.adi-icon-glow {
+    filter: drop-shadow(0 0 8px currentColor);
+}
+
+.adi-icon-primary {
+    color: #00ff88;
+}
+
+.adi-icon-secondary {
+    color: #00d4ff;
+}
+
+.adi-icon-danger {
+    color: #ff4444;
+}
+
+.adi-icon-warning {
+    color: #ffaa00;
+}
+
+.adi-icon-love {
+    color: #ff00ff;
+}
