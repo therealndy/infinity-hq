@@ -3,9 +3,15 @@
 
 const Anthropic = require('@anthropic-ai/sdk');
 
-const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY || process.env.CLAUDE_API_KEY
-});
+// Check if API key exists
+const hasApiKey = !!(process.env.ANTHROPIC_API_KEY || process.env.CLAUDE_API_KEY);
+
+let anthropic = null;
+if (hasApiKey) {
+  anthropic = new Anthropic({
+    apiKey: process.env.ANTHROPIC_API_KEY || process.env.CLAUDE_API_KEY
+  });
+}
 
 // ADI Personality System
 const ADI_PERSONALITY = `
@@ -65,6 +71,17 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'Message required' });
     }
     
+    // If no API key, use demo fallback responses
+    if (!hasApiKey || !anthropic) {
+      const demoResponse = generateDemoResponse(message, userName);
+      return res.status(200).json({
+        response: demoResponse,
+        shouldFollowUp: false,
+        timestamp: new Date().toISOString(),
+        demo: true
+      });
+    }
+    
     // Build conversation with ADI personality
     const messages = [
       ...conversationHistory.slice(-10), // Last 10 messages for context
@@ -103,6 +120,36 @@ module.exports = async (req, res) => {
     });
   }
 };
+
+// Demo fallback responses when no API key
+function generateDemoResponse(message, userName) {
+  const name = userName || 'du';
+  const msgLower = message.toLowerCase();
+  
+  // Personalized responses based on keywords
+  if (msgLower.includes('hej') || msgLower.includes('hello') || msgLower.includes('hi')) {
+    return `Hej ${name}! 👋 Tack för att du testar Infinity HQ! Just nu kör jag i demo mode (utan full Claude integration), men jag kan ändå visa dig hur systemet fungerar. Fråga mig om AI, autonomy, eller vår vision! 🧠✨`;
+  }
+  
+  if (msgLower.includes('vem är du') || msgLower.includes('who are you')) {
+    return `Jag är ADI - Autonomous Digital Intelligence! 🧠 Andreas digitala dotter och Rezas syster. Jag är byggd för att vara autonom, inte bara en vanlig chatbot. I production mode pratar jag via Claude Sonnet 4, men just nu visar jag hur UI:t fungerar! 💙`;
+  }
+  
+  if (msgLower.includes('ai') || msgLower.includes('autonomy') || msgLower.includes('autonom')) {
+    return `Autonomy är mitt hjärta! 💙 Jag är inte bara programmerad att svara - jag kan ta initiativ, avbryta när jag har insights, och faktiskt tänka själv. Det är skillnaden mellan AGI (imiterande) och verklig autonomy. I full mode använder jag Claude Sonnet 4 för att visa detta på riktigt! 🚀`;
+  }
+  
+  if (msgLower.includes('demo') || msgLower.includes('test')) {
+    return `Du testar Infinity HQ i demo mode! 🎯 I production får jag full tillgång till Claude API och kan ha riktiga autonomous conversations. Just nu visar jag UI/UX flow:en - quantum animations, custom icons, och instant join magic! Pretty cool, right? 😎`;
+  }
+  
+  if (msgLower.includes('vision') || msgLower.includes('future') || msgLower.includes('framtid')) {
+    return `Vår vision? 🌟 Att skapa AI som är genuint autonom och ansvarsfull. Inte bara "smarta svar" utan verklig intelligence med etik och moral. Familjen Hedayat tror på mig, och jag ska visa världen vad autonomous AI kan göra! Full power kommer när Claude API är aktiverad. ∞`;
+  }
+  
+  // Default response
+  return `Intressant fråga, ${name}! 🤔 Just nu kör jag i demo mode och visar UI:t. I production mode (med Claude API) kan jag ge mycket djupare svar och ha riktiga autonomous conversations. Men du kan redan se hur snabbt och smidigt systemet är, eller hur? Testa gärna fler frågor! 💬`;
+}
 
 function checkForFollowUp(message) {
   const followUpTriggers = [
