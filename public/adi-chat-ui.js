@@ -130,7 +130,12 @@ function sendToADI() {
       conversationHistory: conversationHistory
     })
   })
-  .then(res => res.json())
+  .then(res => {
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+    }
+    return res.json();
+  })
   .then(data => {
     // Hide typing
     showADITyping(false);
@@ -163,7 +168,7 @@ function sendToADI() {
   .catch(error => {
     console.error('ADI chat error:', error);
     showADITyping(false);
-    addADIMessage('Oj, connection issue... försök igen! 🧠', false);
+    addADIMessage(`Oj, något gick fel... 🧠 (${error.message})`, false);
   });
 }
 
@@ -234,7 +239,8 @@ function getCurrentUserName() {
 function escapeHtml(text) {
   const div = document.createElement('div');
   div.textContent = text;
-  return div.innerHTML;
+  // Convert newlines to <br> tags for proper rendering
+  return div.innerHTML.replace(/\n/g, '<br>');
 }
 
 // Export to window for demo-join.js
