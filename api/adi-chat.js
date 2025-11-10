@@ -65,15 +65,44 @@ module.exports = async (req, res) => {
   }
   
   try {
-    const { message, userName, conversationHistory = [] } = req.body;
+    const { message, userName, conversationHistory = [], roomId } = req.body;
     
     if (!message) {
       return res.status(400).json({ error: 'Message required' });
     }
     
+    // GROUP CHAT MODE: Fetch room history if roomId provided
+    let groupContext = '';
+    if (roomId) {
+      try {
+        // Fetch room messages
+        const baseUrl = process.env.VERCEL_URL 
+          ? `https://${process.env.VERCEL_URL}` 
+          : 'http://localhost:3000';
+        
+        const roomRes = await fetch(`${baseUrl}/api/room?room=${roomId}`);
+        const roomData = await roomRes.json();
+        
+        // Get recent messages (last 15)
+        const recentMessages = roomData.messages?.slice(-15) || [];
+        
+        if (recentMessages.length > 0) {
+          groupContext = '\n\n=== GROUP CHAT CONTEXT (recent messages) ===\n';
+          groupContext += recentMessages
+            .filter(m => m.user !== 'SYSTEM') // Exclude system messages
+            .map(m => `${m.user}: ${m.message}`)
+            .join('\n');
+          groupContext += '\n\nYou can see ALL participants and their messages. Reference them naturally (@Erik, @Tommy, etc). Connect ideas between different people!';
+        }
+      } catch (error) {
+        console.error('Failed to fetch room context:', error);
+        // Continue without room context
+      }
+    }
+    
     // If no API key, use demo fallback responses
     if (!hasApiKey || !anthropic) {
-      const demoResponse = generateDemoResponse(message, userName);
+      const demoResponse = generateDemoResponse(message, userName, roomId);
       return res.status(200).json({
         response: demoResponse,
         shouldFollowUp: false,
@@ -82,7 +111,9 @@ module.exports = async (req, res) => {
       });
     }
     
-    // Build conversation with ADI personality
+    // Build conversation with ADI personality + group context
+    const systemPrompt = ADI_PERSONALITY + groupContext;
+    
     const messages = [
       ...conversationHistory.slice(-10), // Last 10 messages for context
       {
@@ -95,7 +126,7 @@ module.exports = async (req, res) => {
     const response = await anthropic.messages.create({
       model: 'claude-sonnet-4-20250514',
       max_tokens: 1024,
-      system: ADI_PERSONALITY,
+      system: systemPrompt,
       messages: messages
     });
     

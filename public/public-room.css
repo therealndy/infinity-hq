@@ -1,0 +1,358 @@
+/* public/public-room.css - GROUP CHAT STYLING */
+
+.public-room-container {
+  display: flex;
+  height: 100vh;
+  background: linear-gradient(135deg, #0a0a0a 0%, #1a0033 100%);
+  overflow: hidden;
+}
+
+/* LEFT SIDEBAR - Active Users */
+.public-room-sidebar {
+  width: 280px;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(123, 44, 191, 0.3);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.public-room-sidebar h3 {
+  font-size: 1.4em;
+  background: linear-gradient(135deg, #00D4FF, #7B2CBF);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+
+.room-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85em;
+  color: #00D4FF;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  background: #00D4FF;
+  border-radius: 50%;
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.2); }
+}
+
+.active-users-section h4 {
+  font-size: 0.9em;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0 0 12px 0;
+  font-weight: 500;
+}
+
+#active-users-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.active-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(123, 44, 191, 0.2);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.active-user:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(123, 44, 191, 0.4);
+  transform: translateX(4px);
+}
+
+.active-user.user-adi {
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(123, 44, 191, 0.1));
+  border-color: rgba(0, 212, 255, 0.4);
+}
+
+.user-particle {
+  width: 8px;
+  height: 8px;
+  background: linear-gradient(135deg, #00D4FF, #7B2CBF);
+  border-radius: 50%;
+  animation: particle-float 3s ease-in-out infinite;
+}
+
+@keyframes particle-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+.user-icon {
+  font-size: 1.2em;
+}
+
+.user-name {
+  font-size: 0.95em;
+  color: #fff;
+  font-weight: 500;
+}
+
+/* RIGHT CHAT AREA */
+.public-room-chat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.public-messages-area {
+  flex: 1;
+  overflow-y: auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Message styles */
+.public-msg {
+  padding: 14px 18px;
+  border-radius: 16px;
+  max-width: 70%;
+  animation: msg-appear 0.3s ease;
+  position: relative;
+}
+
+@keyframes msg-appear {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.msg-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  gap: 12px;
+}
+
+.msg-user {
+  font-weight: 600;
+  font-size: 0.9em;
+  letter-spacing: 0.5px;
+}
+
+.msg-time {
+  font-size: 0.75em;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.msg-text {
+  font-size: 0.95em;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+/* ADI messages */
+.public-msg-adi {
+  align-self: flex-start;
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(123, 44, 191, 0.15));
+  border: 1px solid rgba(0, 212, 255, 0.3);
+}
+
+.public-msg-adi .msg-user {
+  color: #00D4FF;
+  text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+/* Self messages */
+.public-msg-self {
+  align-self: flex-end;
+  background: rgba(123, 44, 191, 0.2);
+  border: 1px solid rgba(123, 44, 191, 0.4);
+}
+
+.public-msg-self .msg-user {
+  color: #7B2CBF;
+}
+
+/* Other users' messages */
+.public-msg-other {
+  align-self: flex-start;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.public-msg-other .msg-user {
+  color: #FFD60A;
+}
+
+/* System messages */
+.public-msg-system {
+  align-self: center;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 8px 16px;
+  max-width: none;
+}
+
+.msg-system-text {
+  font-size: 0.85em;
+  color: rgba(255, 255, 255, 0.6);
+  font-style: italic;
+}
+
+/* Typing indicator */
+.typing-indicator {
+  padding: 12px 18px;
+  background: rgba(0, 212, 255, 0.1);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: 16px;
+  max-width: 200px;
+  align-self: flex-start;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9em;
+  color: #00D4FF;
+}
+
+.typing-user {
+  font-weight: 600;
+}
+
+.typing-dots {
+  display: inline-flex;
+  gap: 2px;
+}
+
+.typing-dots span {
+  animation: typing-bounce 1.4s ease-in-out infinite;
+}
+
+.typing-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing-bounce {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-4px); }
+}
+
+/* Input area */
+.public-input-area {
+  padding: 20px 24px;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(123, 44, 191, 0.3);
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+#public-room-input {
+  flex: 1;
+  padding: 14px 20px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(123, 44, 191, 0.3);
+  border-radius: 24px;
+  color: #fff;
+  font-size: 0.95em;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  transition: all 0.3s ease;
+}
+
+#public-room-input:focus {
+  outline: none;
+  border-color: #00D4FF;
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+}
+
+#public-room-input::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.public-send-button {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00D4FF, #7B2CBF);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.public-send-button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 30px rgba(0, 212, 255, 0.6);
+}
+
+.public-send-button:active {
+  transform: scale(0.95);
+}
+
+.public-send-button .adi-icon {
+  width: 20px;
+  height: 20px;
+  fill: #fff;
+}
+
+/* Scrollbar styling */
+.public-messages-area::-webkit-scrollbar {
+  width: 8px;
+}
+
+.public-messages-area::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.public-messages-area::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #00D4FF, #7B2CBF);
+  border-radius: 4px;
+}
+
+.public-messages-area::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #7B2CBF, #FFD60A);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .public-room-sidebar {
+    width: 200px;
+    padding: 16px;
+  }
+  
+  .public-msg {
+    max-width: 85%;
+  }
+  
+  .public-input-area {
+    padding: 16px;
+  }
+}

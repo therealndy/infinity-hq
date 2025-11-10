@@ -146,36 +146,34 @@
           window.userEmail = data.user.email;
         }
         
-        // Close demo modal
-        const modal = document.getElementById('demo-join-modal');
-        modal.classList.add('fade-out');
-        
-        setTimeout(() => {
-          modal.remove();
+          // Close demo modal
+          const modal = document.getElementById('demo-join-modal');
+          modal.classList.add('fade-out');
           
-          // Trigger auth success
-          const authModal = document.getElementById('authModal');
-          if (authModal) {
-            authModal.classList.remove('show');
-          }
-          
-          // Update UI
-          const userEmailEl = document.getElementById('userEmail');
-          if (userEmailEl) {
-            userEmailEl.textContent = name;
-          }
-          
-          const logoutBtn = document.getElementById('logoutBtn');
-          if (logoutBtn) {
-            logoutBtn.style.display = 'block';
-          }
-          
-          // Start ADI greeting
-          startADIGreeting(name, demoId);
-          
-        }, 500);
-        
-      } else {
+          setTimeout(() => {
+            modal.remove();
+            
+            // Trigger auth success
+            const authModal = document.getElementById('authModal');
+            if (authModal) {
+              authModal.classList.remove('show');
+            }
+            
+            // Update UI
+            const userEmailEl = document.getElementById('userEmail');
+            if (userEmailEl) {
+              userEmailEl.textContent = name;
+            }
+            
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+              logoutBtn.style.display = 'block';
+            }
+            
+            // Join PUBLIC ROOM instead of 1-on-1 chat
+            joinPublicRoom(name);
+            
+          }, 500);      } else {
         alert('Demo authentication failed. Please try again.');
         location.reload();
       }
