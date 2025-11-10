@@ -3,6 +3,7 @@
 
 let adiWS = null;
 let isADITyping = false;
+let conversationHistory = [];
 
 function initADIChatUI() {
   const chatContainer = document.getElementById('chat-container');
@@ -98,77 +99,75 @@ function toggleADIChat() {
 }
 
 function connectADIWebSocket() {
-  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-  const wsUrl = `${protocol}//${window.location.host}`;
-  
-  adiWS = new WebSocket(wsUrl);
-  
-  adiWS.onopen = () => {
-    console.log('🧠 ADI WebSocket connected');
-    
-    // Authenticate if token exists
-    const token = localStorage.getItem('accessToken');
-    if (token) {
-      adiWS.send(JSON.stringify({
-        type: 'auth',
-        token: token
-      }));
-    }
-  };
-  
-  adiWS.onmessage = (event) => {
-    try {
-      const data = JSON.parse(event.data);
-      
-      if (data.type === 'adi-typing') {
-        showADITyping(data.isTyping);
-      }
-      
-      if (data.type === 'adi-response') {
-        addADIMessage(data.message, false);
-      }
-      
-      if (data.type === 'adi-autonomous-thought') {
-        setTimeout(() => {
-          addADIMessage(data.message, true);
-        }, 1000);
-      }
-      
-    } catch (err) {
-      console.error('ADI WebSocket message error:', err);
-    }
-  };
-  
-  adiWS.onerror = (error) => {
-    console.error('ADI WebSocket error:', error);
-  };
-  
-  adiWS.onclose = () => {
-    console.log('ADI WebSocket disconnected - reconnecting...');
-    setTimeout(connectADIWebSocket, 3000);
-  };
+  // Using serverless API instead of WebSocket for Vercel
+  console.log('🧠 ADI Chat ready (serverless mode)');
+  conversationHistory = [];
 }
 
 function sendToADI() {
   const input = document.getElementById('adi-input');
   const message = input.value.trim();
   
-  if (!message || !adiWS || adiWS.readyState !== WebSocket.OPEN) {
+  if (!message) {
     return;
   }
   
   // Add user message to chat
   addADIMessage(message, false, true);
   
-  // Send to ADI
-  adiWS.send(JSON.stringify({
-    type: 'adi-chat',
-    message: message,
-    userName: getCurrentUserName()
-  }));
-  
   // Clear input
   input.value = '';
+  
+  // Show typing indicator
+  showADITyping(true);
+  
+  // Send to ADI via serverless API
+  fetch('/api/adi-chat', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      message: message,
+      userName: getCurrentUserName(),
+      conversationHistory: conversationHistory
+    })
+  })
+  .then(res => res.json())
+  .then(data => {
+    // Hide typing
+    showADITyping(false);
+    
+    if (data.error) {
+      addADIMessage(data.response, false);
+    } else {
+      // Add ADI response
+      addADIMessage(data.response, false);
+      
+      // Update conversation history
+      conversationHistory.push(
+        { role: 'user', content: message },
+        { role: 'assistant', content: data.response }
+      );
+      
+      // Keep only last 10 messages
+      if (conversationHistory.length > 20) {
+        conversationHistory = conversationHistory.slice(-20);
+      }
+      
+      // Autonomous follow-up if needed
+      if (data.shouldFollowUp) {
+        setTimeout(() => {
+          addADIMessage('💭 Intressant... vill du att jag går djupare in på det?', true);
+        }, 2000);
+      }
+    }
+  })
+  .catch(error => {
+    console.error('ADI chat error:', error);
+    showADITyping(false);
+    addADIMessage('Oj, connection issue... försök igen! 🧠', false);
+  });
 }
 
 function handleADIKeyPress(event) {

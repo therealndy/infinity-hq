@@ -57,6 +57,7 @@ function setupAuth() {
 async function register() {
   const email = document.getElementById('registerEmail').value;
   const password = document.getElementById('registerPassword').value;
+  const username = email.split('@')[0]; // Use email prefix as username
   
   if (!email || !password) {
     alert('Please fill in all fields');
@@ -64,21 +65,23 @@ async function register() {
   }
   
   try {
-    const res = await fetch('/api/auth/register', {
+    const res = await fetch('/api/auth', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
+      body: JSON.stringify({ email, password, username })
     });
     
     const data = await res.json();
     
     if (res.ok) {
-      token = data.token;
-      userId = data.userId;
-      userEmail = data.email;
+      localStorage.setItem('accessToken', data.accessToken);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      token = data.accessToken;
+      userId = data.user.id;
+      userEmail = data.user.email;
       onAuthSuccess();
     } else {
-      alert(`Error: ${data.error}`);
+      alert(`Registration failed: ${data.message || data.error}`);
     }
   } catch (err) {
     alert(`Network error: ${err.message}`);
@@ -95,7 +98,7 @@ async function login() {
   }
   
   try {
-    const res = await fetch('/api/auth/login', {
+    const res = await fetch('/api/auth', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
@@ -104,12 +107,14 @@ async function login() {
     const data = await res.json();
     
     if (res.ok) {
-      token = data.token;
-      userId = data.userId;
-      userEmail = data.email;
+      localStorage.setItem('accessToken', data.accessToken);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      token = data.accessToken;
+      userId = data.user.id;
+      userEmail = data.user.email;
       onAuthSuccess();
     } else {
-      alert(`Error: ${data.error}`);
+      alert(`Login failed: ${data.message || data.error}`);
     }
   } catch (err) {
     alert(`Network error: ${err.message}`);
