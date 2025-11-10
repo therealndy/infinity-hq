@@ -24,8 +24,8 @@ module.exports = async (req, res) => {
       return res.status(400).json({ error: 'Text required' });
     }
     
-    // Check for ElevenLabs API key
-    const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY;
+    // ElevenLabs API key
+    const ELEVENLABS_API_KEY = process.env.ELEVENLABS_API_KEY || 'sk_4fd30485cd2b35854138a845d08f0e224705cd7a4bec59f4';
     
     if (!ELEVENLABS_API_KEY) {
       // Fallback: Return demo mode indicator
@@ -36,18 +36,13 @@ module.exports = async (req, res) => {
       });
     }
     
-    // ElevenLabs Voice IDs
-    const voiceIds = {
-      'professional': 'EXAVITQu4vr4xnSDxMaL', // Sarah - Professional female voice
-      'warm': 'pNInz6obpgDQGcFmaJgB', // Adam - Warm conversational
-      'dynamic': '21m00Tcm4TlvDq8ikWAM'  // Rachel - Clear and dynamic
-    };
+    // ADI's voice - Sarah (Professional female, clear, business-appropriate)
+    // Model: eleven_multilingual_v2 supports BOTH English AND Swedish!
+    const ADI_VOICE_ID = 'EXAVITQu4vr4xnSDxMaL'; // Sarah from ElevenLabs
     
-    const selectedVoiceId = voiceIds[voice] || voiceIds['professional'];
-    
-    // Call ElevenLabs API
-    const response = await fetch(
-      `https://api.elevenlabs.io/v1/text-to-speech/${selectedVoiceId}`,
+    // Call ElevenLabs Text-to-Speech API
+    const voiceResponse = await fetch(
+      `https://api.elevenlabs.io/v1/text-to-speech/${ADI_VOICE_ID}`,
       {
         method: 'POST',
         headers: {
@@ -57,23 +52,25 @@ module.exports = async (req, res) => {
         },
         body: JSON.stringify({
           text: text,
-          model_id: 'eleven_monolingual_v1',
+          model_id: 'eleven_multilingual_v2', // English + Swedish support!
           voice_settings: {
-            stability: 0.6,
-            similarity_boost: 0.8,
-            style: 0.4,
-            use_speaker_boost: true
+            stability: 0.5,           // Balance between consistency and expressiveness
+            similarity_boost: 0.75,   // How closely to match the voice
+            style: 0.5,              // Amount of style to apply
+            use_speaker_boost: true   // Enhance clarity
           }
         })
       }
     );
     
-    if (!response.ok) {
-      throw new Error(`ElevenLabs API error: ${response.status}`);
+    if (!voiceResponse.ok) {
+      const errorText = await voiceResponse.text();
+      console.error('ElevenLabs API error:', voiceResponse.status, errorText);
+      throw new Error(`ElevenLabs API error: ${voiceResponse.status}`);
     }
     
     // Get audio buffer
-    const audioBuffer = await response.arrayBuffer();
+    const audioBuffer = await voiceResponse.arrayBuffer();
     
     // Return audio as MP3
     res.setHeader('Content-Type', 'audio/mpeg');
