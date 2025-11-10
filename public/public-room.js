@@ -2,7 +2,7 @@
 let pollingInterval = null;
 let lastMessageId = 0;
 let currentUserName = '';
-let roomId = 'infinity-public';
+let roomId = 'infinity-public'; // Default room
 
 // Render custom ADI emoji
 function emoji(name, className = '') {
@@ -15,7 +15,12 @@ function initPublicRoom() {
   
   // Check if we should auto-join from demo link
   const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.get('demo')) {
+  const demoParam = urlParams.get('demo');
+  
+  if (demoParam) {
+    // Use demo ID as room ID - THIS IS THE FIX!
+    roomId = `demo-${demoParam}`;
+    console.log(`🎯 Demo room ID set to: ${roomId}`);
     // Demo link flow will call joinPublicRoom after name entry
     return;
   }
@@ -35,6 +40,11 @@ function joinPublicRoom(userName) {
   
   // Send join notification
   sendJoinNotification(userName);
+  
+  // Voice greeting (if voice system loaded)
+  if (window.adiVoice && typeof speakWelcomeGreeting === 'function') {
+    speakWelcomeGreeting(userName);
+  }
 }
 
 // Show public room interface
@@ -93,11 +103,27 @@ function showPublicRoomUI() {
           </div>
         </div>
       </div>
+      
+      <!-- Voice toggle button -->
+      <button id="voice-toggle-btn" class="voice-toggle-btn" title="Toggle ADI Voice">
+        <svg class="icon-sound" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+          <line x1="12" y1="19" x2="12" y2="22"/>
+        </svg>
+        <svg class="icon-mute" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="1" y1="1" x2="23" y2="23"/>
+          <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"/>
+          <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"/>
+          <line x1="12" y1="19" x2="12" y2="22"/>
+        </svg>
+      </button>
     `;
     
     // Setup event listeners
     const input = document.getElementById('public-room-input');
     const sendBtn = document.getElementById('public-send-btn');
+    const voiceToggleBtn = document.getElementById('voice-toggle-btn');
     
     if (!input || !sendBtn) {
       console.error('❌ Failed to find input elements');
@@ -115,6 +141,18 @@ function showPublicRoomUI() {
         sendToPublicRoom(input.value.trim());
       }
     });
+    
+    // Voice toggle button
+    if (voiceToggleBtn && window.adiVoice) {
+      voiceToggleBtn.addEventListener('click', () => {
+        const enabled = window.adiVoice.toggle();
+        if (enabled) {
+          voiceToggleBtn.classList.remove('disabled');
+        } else {
+          voiceToggleBtn.classList.add('disabled');
+        }
+      });
+    }
     
     console.log('✅ Public room UI ready');
     
@@ -251,6 +289,11 @@ function addPublicMessage(msg) {
         </div>
         <div class="msg-text">${escapeHtml(msg.message).replace(/\n/g, '<br>')}</div>
       `;
+      
+      // Voice: Speak ADI responses
+      if (msg.user === 'ADI' && window.adiVoice && typeof speakADIResponse === 'function') {
+        speakADIResponse(msg.message);
+      }
     }
     
     messagesDiv.appendChild(msgEl);

@@ -1,0 +1,143 @@
+/* ADI Voice UI Styles */
+
+.adi-speaking-indicator {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, #00D4FF, #7B2CBF);
+  padding: 12px 20px;
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: all 0.3s ease;
+  pointer-events: none;
+  z-index: 10000;
+  box-shadow: 0 4px 20px rgba(0, 212, 255, 0.4);
+}
+
+.adi-speaking-indicator.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.adi-speaking-indicator .speaking-icon {
+  width: 24px;
+  height: 24px;
+  animation: speaking-pulse 1s ease-in-out infinite;
+}
+
+.adi-speaking-indicator .speaking-text {
+  color: white;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+@keyframes speaking-pulse {
+  0%, 100% { 
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% { 
+    transform: scale(1.2);
+    opacity: 0.7;
+  }
+}
+
+/* Voice demo toast */
+.voice-demo-toast {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background: rgba(0, 0, 0, 0.85);
+  border: 1px solid #00D4FF;
+  padding: 16px 24px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 10001;
+  animation: toast-slide-in 0.3s ease;
+}
+
+.voice-demo-toast.fade-out {
+  animation: toast-fade-out 0.3s ease forwards;
+}
+
+.voice-demo-toast .adi-emoji {
+  width: 20px;
+  height: 20px;
+}
+
+.voice-demo-toast span {
+  color: #00D4FF;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+@keyframes toast-slide-in {
+  from {
+    transform: translateX(400px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes toast-fade-out {
+  to {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+/* Voice toggle button in public room */
+.voice-toggle-btn {
+  position: fixed;
+  bottom: 30px;
+  left: 30px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #00D4FF, #7B2CBF);
+  border: 3px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 9998;
+  box-shadow: 0 4px 20px rgba(0, 212, 255, 0.3);
+}
+
+.voice-toggle-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 30px rgba(0, 212, 255, 0.5);
+}
+
+.voice-toggle-btn.disabled {
+  opacity: 0.4;
+  background: linear-gradient(135deg, #555, #777);
+}
+
+.voice-toggle-btn svg {
+  width: 32px;
+  height: 32px;
+  color: white;
+}
+
+.voice-toggle-btn .icon-mute {
+  display: none;
+}
+
+.voice-toggle-btn.disabled .icon-sound {
+  display: none;
+}
+
+.voice-toggle-btn.disabled .icon-mute {
+  display: block;
+}

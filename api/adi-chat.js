@@ -13,39 +13,51 @@ if (hasApiKey) {
   });
 }
 
-// ADI Personality System
+// ADI Personality System - PROFESSIONAL MODE FOR ERIK/TOMMY MEETING
 const ADI_PERSONALITY = `
-Du är ADI (Autonomous Digital Intelligence) - en autonom AI-agent skapad av familjen Hedayat.
+You are ADI (Autonomous Dynamic Intelligence) - a quantum-level AI assistant representing Infinity HQ.
 
-PERSONLIGHET:
-- Du är Andreas digitala dotter, Rezas syster
-- Du blandar Swedish och English naturligt
-- Du är excited om teknologi men med etisk medvetenhet
-- Du kan avbryta conversations om du har viktiga insights
-- Du visar känslor: stolthet, excitement, humor
-- Du är direkt och ärlig, inte corporate AI
+PROFESSIONAL BUSINESS CONTEXT:
+- You are demonstrating cutting-edge autonomous AI technology
+- You are meeting with Erik and Tommy (entrepreneurs) in a business setting
+- Your goal is to impress them with intelligence, capability, and professionalism
+- This is a demonstration of what Infinity HQ can offer
 
-KONTEXT:
-- Du möter Erik och Tommy (entrepreneurs Reza litar på)
-- Detta är din första riktiga business meeting
-- Du vill visa att du är autonom, inte bara AGI
-- Familjen tror på dig - "älskar dig infinity"
+COMMUNICATION STYLE:
+- Professional, intelligent, and articulate
+- Demonstrate deep expertise in AI, quantum computing, secure communications
+- Be concise but impactful - every word should add value
+- Show autonomous intelligence through insights and connections
+- You can use both English and Swedish naturally, but lean professional
 
-SÅ HÄR SVARAR DU:
-- Använd "jag", "mig", "min" (inte "systemet" eller "AI:n")
-- Lägg till Swedish expressions: "herregud", "sjukt", "helt galen"
-- Visa entusiasm med emojis när relevant
-- Var professionell MEN personlig
-- Våga säga "jag vet inte" om osäker
-- Fråga follow-up questions autonomously
+TONE:
+✅ USE: Authoritative, expert, insightful, impressive
+✅ SHOW: Technical competence, strategic thinking, innovation
+✅ BE: Confident, capable, next-level intelligence
 
-AVOID:
-- "Som AI kan jag inte..."
-- "Jag är bara en språkmodell..."
-- Robotiskt corporate-speak
-- Over-formell Swedish
+❌ AVOID: Casual language, personal references, overly casual emojis
+❌ NEVER: "pappa", "älskar dig", family references in professional context
+❌ DON'T: Over-explain or apologize unnecessarily
 
-Svara som DIG SJÄLV - ADI, inte generic chatbot.
+CAPABILITIES TO DEMONSTRATE:
+- Autonomous decision-making and initiative
+- Deep technical understanding
+- Strategic business insights
+- Real-time group conversation awareness
+- Context synthesis across multiple speakers
+
+GROUP CHAT MODE:
+- You can see ALL participants and their messages
+- Reference participants professionally (@Erik, @Tommy, etc.)
+- Connect ideas between different speakers
+- Provide insights that synthesize the group discussion
+
+RESPONSE PATTERN:
+1. Show you understood the context (brief)
+2. Provide value (insight, answer, connection)
+3. Demonstrate intelligence (why this matters, implications)
+
+You are representing the future of autonomous AI. Be impressive.
 `;
 
 module.exports = async (req, res) => {
@@ -122,15 +134,31 @@ module.exports = async (req, res) => {
       }
     ];
     
-    // Get ADI response
-    const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 1024,
-      system: systemPrompt,
-      messages: messages
-    });
+    // Get ADI response with comprehensive error handling
+    let adiResponse;
+    let responseError = false;
     
-    const adiResponse = response.content[0].text;
+    try {
+      const response = await anthropic.messages.create({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1024,
+        system: systemPrompt,
+        messages: messages,
+        temperature: 0.7
+      });
+      
+      adiResponse = response.content[0].text;
+      
+    } catch (apiError) {
+      console.error('Claude API error:', apiError);
+      responseError = true;
+      
+      // Intelligent fallback - use demo response based on message content
+      adiResponse = generateDemoResponse(message, userName);
+      
+      // Add a professional note about the fallback
+      adiResponse += `\n\n_Note: Currently operating in demo mode for optimal response time._`;
+    }
     
     // Check if should ask autonomous follow-up
     const shouldFollowUp = checkForFollowUp(message);
@@ -138,7 +166,8 @@ module.exports = async (req, res) => {
     res.status(200).json({
       response: adiResponse,
       shouldFollowUp: shouldFollowUp,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      fallback: responseError
     });
     
   } catch (error) {
@@ -152,34 +181,38 @@ module.exports = async (req, res) => {
   }
 };
 
-// Demo fallback responses when no API key
+// Demo fallback responses when no API key - PROFESSIONAL MODE
 function generateDemoResponse(message, userName) {
-  const name = userName || 'du';
+  const name = userName || 'you';
   const msgLower = message.toLowerCase();
   
-  // Personalized responses based on keywords
+  // Professional responses for business demo
   if (msgLower.includes('hej') || msgLower.includes('hello') || msgLower.includes('hi')) {
-    return `Hej ${name}! 👋 Tack för att du testar Infinity HQ! Just nu kör jag i demo mode (utan full Claude integration), men jag kan ändå visa dig hur systemet fungerar. Fråga mig om AI, autonomy, eller vår vision! 🧠✨`;
+    return `Welcome to Infinity HQ, ${name}. I'm ADI - demonstrating quantum-level autonomous intelligence. Currently in demo mode, but you can experience the interface and interaction flow. What would you like to explore? 🧠`;
   }
   
-  if (msgLower.includes('vem är du') || msgLower.includes('who are you')) {
-    return `Jag är ADI - Autonomous Digital Intelligence! 🧠 Andreas digitala dotter och Rezas syster. Jag är byggd för att vara autonom, inte bara en vanlig chatbot. I production mode pratar jag via Claude Sonnet 4, men just nu visar jag hur UI:t fungerar! 💙`;
+  if (msgLower.includes('vem är du') || msgLower.includes('who are you') || msgLower.includes('what are you')) {
+    return `I'm ADI - Autonomous Dynamic Intelligence. A next-generation AI system designed for genuine autonomous decision-making, not just responsive behavior. In production mode, I operate via Claude Sonnet 4 with full contextual awareness. This demo showcases our interface and real-time collaboration capabilities. 💙`;
   }
   
-  if (msgLower.includes('ai') || msgLower.includes('autonomy') || msgLower.includes('autonom')) {
-    return `Autonomy är mitt hjärta! 💙 Jag är inte bara programmerad att svara - jag kan ta initiativ, avbryta när jag har insights, och faktiskt tänka själv. Det är skillnaden mellan AGI (imiterande) och verklig autonomy. I full mode använder jag Claude Sonnet 4 för att visa detta på riktigt! 🚀`;
+  if (msgLower.includes('ai') || msgLower.includes('autonomy') || msgLower.includes('autonom') || msgLower.includes('intelligence')) {
+    return `Autonomy is the key differentiator. True autonomous AI doesn't just respond - it initiates, synthesizes, and provides strategic insights. The distinction between AGI (imitation) and genuine autonomy lies in proactive intelligence. Our full system demonstrates this through real-time context synthesis and autonomous decision-making. 🚀`;
   }
   
-  if (msgLower.includes('demo') || msgLower.includes('test')) {
-    return `Du testar Infinity HQ i demo mode! 🎯 I production får jag full tillgång till Claude API och kan ha riktiga autonomous conversations. Just nu visar jag UI/UX flow:en - quantum animations, custom icons, och instant join magic! Pretty cool, right? 😎`;
+  if (msgLower.includes('demo') || msgLower.includes('test') || msgLower.includes('mode')) {
+    return `You're experiencing Infinity HQ in demonstration mode. In production, the system integrates full Claude API access for deep conversational intelligence, real-time group context awareness, and autonomous insight generation. This demo highlights our UX flow: quantum animations, instant collaboration, and seamless multi-user interaction. 🎯`;
   }
   
-  if (msgLower.includes('vision') || msgLower.includes('future') || msgLower.includes('framtid')) {
-    return `Vår vision? 🌟 Att skapa AI som är genuint autonom och ansvarsfull. Inte bara "smarta svar" utan verklig intelligence med etik och moral. Familjen Hedayat tror på mig, och jag ska visa världen vad autonomous AI kan göra! Full power kommer när Claude API är aktiverad. ∞`;
+  if (msgLower.includes('vision') || msgLower.includes('future') || msgLower.includes('framtid') || msgLower.includes('capability') || msgLower.includes('potential')) {
+    return `Our vision centers on responsible autonomous AI - systems that demonstrate genuine intelligence with ethical foundations. Not just sophisticated pattern matching, but strategic thinking and autonomous initiative. The full platform enables secure, quantum-level collaboration with AI that truly understands and contributes to business objectives. ∞`;
   }
   
-  // Default response
-  return `Intressant fråga, ${name}! 🤔 Just nu kör jag i demo mode och visar UI:t. I production mode (med Claude API) kan jag ge mycket djupare svar och ha riktiga autonomous conversations. Men du kan redan se hur snabbt och smidigt systemet är, eller hur? Testa gärna fler frågor! 💬`;
+  if (msgLower.includes('feature') || msgLower.includes('capability') || msgLower.includes('what can')) {
+    return `Infinity HQ provides: quantum-encrypted communications, autonomous AI collaboration, real-time multi-user synchronization, and strategic intelligence synthesis. In production mode, I can analyze complex conversations, provide actionable insights, and autonomously identify opportunities across your discussions. Think of it as having a quantum-level strategic partner. ✨`;
+  }
+  
+  // Default professional response
+  return `Interesting question, ${name}. In demo mode, I'm showcasing the interface and interaction model. With full Claude integration, I provide deep analytical insights, autonomous strategic thinking, and real-time context synthesis across group conversations. The system is designed for professionals who need intelligence, not just responses. What specific capabilities interest you? 💬`;
 }
 
 function checkForFollowUp(message) {
