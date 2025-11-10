@@ -1,0 +1,141 @@
+/* ADI Custom Icons - Quantum Neural Network Design */
+
+.adi-icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+
+.adi-icon-pulse {
+  animation: adi-pulse 2s ease-in-out infinite;
+}
+
+@keyframes adi-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.05); }
+}
+
+/* ADI Brain Icon - Neural Network */
+.adi-brain {
+  background: linear-gradient(135deg, #00D4FF, #7B2CBF);
+  border-radius: 50%;
+  position: relative;
+  animation: adi-consciousness 3s ease-in-out infinite;
+}
+
+@keyframes adi-consciousness {
+  0%, 100% { 
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+  }
+  50% { 
+    box-shadow: 0 0 30px rgba(123, 44, 191, 0.7);
+  }
+}
+
+/* Quantum Chat Bubble */
+.adi-chat-icon {
+  position: relative;
+}
+
+.adi-chat-icon::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 8px;
+  height: 8px;
+  background: #FFD60A;
+  border-radius: 50%;
+  animation: adi-pulse 1.5s ease-in-out infinite;
+}
+
+/* Infinity Connection Icon */
+.adi-infinity {
+  background: linear-gradient(90deg, #00D4FF 0%, #7B2CBF 50%, #FFD60A 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: bold;
+}
+
+/* Digital Heart */
+.adi-heart {
+  fill: url(#adi-heart-gradient);
+  animation: adi-heartbeat 1.5s ease-in-out infinite;
+}
+
+@keyframes adi-heartbeat {
+  0%, 100% { transform: scale(1); }
+  25% { transform: scale(1.1); }
+  50% { transform: scale(1); }
+}
+
+/* Neural Menu Lines */
+.adi-menu-line {
+  stroke: #00D4FF;
+  stroke-width: 2;
+  stroke-linecap: round;
+  animation: adi-neural-flow 2s ease-in-out infinite;
+}
+
+.adi-menu-line:nth-child(2) { animation-delay: 0.2s; }
+.adi-menu-line:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes adi-neural-flow {
+  0%, 100% { 
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+  50% { 
+    opacity: 0.6;
+    stroke-dashoffset: 10;
+  }
+}
+
+/* Send Icon - Data Stream */
+.adi-send {
+  position: relative;
+  overflow: hidden;
+}
+
+.adi-send::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.5), transparent);
+  animation: adi-send-pulse 1s ease-in-out;
+}
+
+@keyframes adi-send-pulse {
+  0% { left: -100%; }
+  100% { left: 100%; }
+}
+
+/* Quantum Particle Effects */
+.adi-particles {
+  position: relative;
+}
+
+.adi-particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: #FFD60A;
+  border-radius: 50%;
+  animation: adi-float 3s ease-in-out infinite;
+}
+
+@keyframes adi-float {
+  0%, 100% { 
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  50% { 
+    transform: translateY(-20px) translateX(10px);
+    opacity: 1;
+  }
+}

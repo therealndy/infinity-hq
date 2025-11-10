@@ -11,8 +11,20 @@ let canvas, ctx;
 let particles = [];
 let physicsEnabled = false;
 
+// Load ADI Custom Icons
+async function loadADIIcons() {
+  try {
+    const response = await fetch('adi-icons.svg');
+    const svgText = await response.text();
+    document.getElementById('adi-icons-loader').innerHTML = svgText;
+  } catch (error) {
+    console.warn('ADI icons not loaded:', error);
+  }
+}
+
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
+  loadADIIcons();
   setupAuth();
   setupCanvas();
   setupEventListeners();

@@ -1,0 +1,124 @@
+<!-- ADI Custom SVG Icons -->
+<svg style="display: none;">
+  <defs>
+    <!-- ADI Brain - Neural Network -->
+    <symbol id="adi-brain" viewBox="0 0 48 48">
+      <circle cx="24" cy="24" r="20" fill="url(#brain-gradient)" opacity="0.2"/>
+      <circle cx="24" cy="24" r="3" fill="#00D4FF"/>
+      <circle cx="15" cy="18" r="2" fill="#7B2CBF"/>
+      <circle cx="33" cy="18" r="2" fill="#7B2CBF"/>
+      <circle cx="12" cy="30" r="2" fill="#FFD60A"/>
+      <circle cx="36" cy="30" r="2" fill="#FFD60A"/>
+      <circle cx="24" cy="35" r="2" fill="#00D4FF"/>
+      
+      <!-- Neural connections -->
+      <line x1="24" y1="24" x2="15" y2="18" stroke="#00D4FF" stroke-width="1.5" opacity="0.6"/>
+      <line x1="24" y1="24" x2="33" y2="18" stroke="#00D4FF" stroke-width="1.5" opacity="0.6"/>
+      <line x1="24" y1="24" x2="12" y2="30" stroke="#7B2CBF" stroke-width="1.5" opacity="0.6"/>
+      <line x1="24" y1="24" x2="36" y2="30" stroke="#7B2CBF" stroke-width="1.5" opacity="0.6"/>
+      <line x1="24" y1="24" x2="24" y2="35" stroke="#FFD60A" stroke-width="1.5" opacity="0.6"/>
+      
+      <linearGradient id="brain-gradient">
+        <stop offset="0%" stop-color="#00D4FF"/>
+        <stop offset="100%" stop-color="#7B2CBF"/>
+      </linearGradient>
+    </symbol>
+    
+    <!-- Quantum Chat Bubble -->
+    <symbol id="adi-chat" viewBox="0 0 48 48">
+      <path d="M12 8 C12 8, 6 8, 6 14 L6 28 C6 34, 12 34, 12 34 L18 34 L24 42 L30 34 L36 34 C42 34, 42 28, 42 28 L42 14 C42 8, 36 8, 36 8 Z" 
+            fill="none" stroke="url(#chat-gradient)" stroke-width="2"/>
+      
+      <!-- Quantum particles inside -->
+      <circle cx="16" cy="20" r="1.5" fill="#00D4FF" opacity="0.8"/>
+      <circle cx="24" cy="20" r="1.5" fill="#7B2CBF" opacity="0.8"/>
+      <circle cx="32" cy="20" r="1.5" fill="#FFD60A" opacity="0.8"/>
+      
+      <linearGradient id="chat-gradient">
+        <stop offset="0%" stop-color="#00D4FF"/>
+        <stop offset="50%" stop-color="#7B2CBF"/>
+        <stop offset="100%" stop-color="#FFD60A"/>
+      </linearGradient>
+    </symbol>
+    
+    <!-- Infinity Connection -->
+    <symbol id="adi-infinity" viewBox="0 0 48 48">
+      <path d="M 10,24 C 10,18 14,14 18,14 C 22,14 26,18 30,24 C 34,30 38,34 42,34 C 46,34 50,30 50,24 C 50,18 46,14 42,14 C 38,14 34,18 30,24 C 26,30 22,34 18,34 C 14,34 10,30 10,24 Z" 
+            fill="none" stroke="url(#infinity-gradient)" stroke-width="3" stroke-linecap="round"/>
+      
+      <linearGradient id="infinity-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#00D4FF"/>
+        <stop offset="50%" stop-color="#7B2CBF"/>
+        <stop offset="100%" stop-color="#FFD60A"/>
+      </linearGradient>
+    </symbol>
+    
+    <!-- Digital Heart -->
+    <symbol id="adi-heart" viewBox="0 0 48 48">
+      <path d="M24,42 L10,28 C6,24 6,18 10,14 C14,10 20,10 24,14 C28,10 34,10 38,14 C42,18 42,24 38,28 Z" 
+            fill="url(#heart-gradient)"/>
+      
+      <!-- Binary code pattern inside -->
+      <text x="18" y="26" font-family="monospace" font-size="8" fill="#000" opacity="0.3">10</text>
+      <text x="26" y="26" font-family="monospace" font-size="8" fill="#000" opacity="0.3">01</text>
+      
+      <linearGradient id="heart-gradient">
+        <stop offset="0%" stop-color="#FFD60A"/>
+        <stop offset="100%" stop-color="#7B2CBF"/>
+      </linearGradient>
+    </symbol>
+    
+    <!-- Consciousness Menu -->
+    <symbol id="adi-menu" viewBox="0 0 48 48">
+      <!-- Three neural pathway lines -->
+      <path d="M 8,14 L 40,14" stroke="#00D4FF" stroke-width="3" stroke-linecap="round" 
+            stroke-dasharray="4 2" class="adi-menu-line"/>
+      <path d="M 8,24 L 40,24" stroke="#7B2CBF" stroke-width="3" stroke-linecap="round" 
+            stroke-dasharray="4 2" class="adi-menu-line"/>
+      <path d="M 8,34 L 40,34" stroke="#FFD60A" stroke-width="3" stroke-linecap="round" 
+            stroke-dasharray="4 2" class="adi-menu-line"/>
+    </symbol>
+    
+    <!-- Send - Data Stream -->
+    <symbol id="adi-send" viewBox="0 0 48 48">
+      <path d="M 6,24 L 42,12 L 30,24 L 42,36 Z" fill="url(#send-gradient)"/>
+      <circle cx="30" cy="24" r="2" fill="#FFD60A">
+        <animate attributeName="r" values="2;3;2" dur="1s" repeatCount="indefinite"/>
+      </circle>
+      
+      <linearGradient id="send-gradient">
+        <stop offset="0%" stop-color="#00D4FF"/>
+        <stop offset="100%" stop-color="#7B2CBF"/>
+      </linearGradient>
+    </symbol>
+    
+    <!-- Settings - Quantum Gear -->
+    <symbol id="adi-settings" viewBox="0 0 48 48">
+      <circle cx="24" cy="24" r="8" fill="none" stroke="url(#settings-gradient)" stroke-width="2"/>
+      
+      <!-- 6 quantum nodes around -->
+      <circle cx="24" cy="10" r="3" fill="#00D4FF"/>
+      <circle cx="38" cy="17" r="3" fill="#7B2CBF"/>
+      <circle cx="38" cy="31" r="3" fill="#FFD60A"/>
+      <circle cx="24" cy="38" r="3" fill="#00D4FF"/>
+      <circle cx="10" cy="31" r="3" fill="#7B2CBF"/>
+      <circle cx="10" cy="17" r="3" fill="#FFD60A"/>
+      
+      <linearGradient id="settings-gradient">
+        <stop offset="0%" stop-color="#00D4FF"/>
+        <stop offset="100%" stop-color="#7B2CBF"/>
+      </linearGradient>
+    </symbol>
+    
+    <!-- Close - Quantum X -->
+    <symbol id="adi-close" viewBox="0 0 48 48">
+      <line x1="14" y1="14" x2="34" y2="34" stroke="url(#close-gradient)" stroke-width="3" stroke-linecap="round"/>
+      <line x1="34" y1="14" x2="14" y2="34" stroke="url(#close-gradient)" stroke-width="3" stroke-linecap="round"/>
+      
+      <linearGradient id="close-gradient">
+        <stop offset="0%" stop-color="#00D4FF"/>
+        <stop offset="100%" stop-color="#7B2CBF"/>
+      </linearGradient>
+    </symbol>
+  </defs>
+</svg>

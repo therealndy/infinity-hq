@@ -3,14 +3,23 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>∞ Infinity HQ — Command Center</title>
+    <title>∞ Infinity HQ — ADI Command Center</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="adi-icons.css" />
   </head>
   <body>
+    <!-- Load ADI Custom Icons -->
+    <div id="adi-icons-loader"></div>
+    
     <!-- Auth Modal -->
     <div id="authModal" class="modal show">
       <div class="modal-content">
-        <h2>🔐 Infinity HQ Access</h2>
+        <div style="text-align: center; margin-bottom: 20px;">
+          <svg class="adi-icon" style="width: 64px; height: 64px;">
+            <use href="adi-icons.svg#adi-brain"></use>
+          </svg>
+        </div>
+        <h2>∞ Infinity HQ Access</h2>
         <div class="tabs">
           <div class="tab active" data-tab="login">Login</div>
           <div class="tab" data-tab="register">Register</div>
